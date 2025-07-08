@@ -1,0 +1,75 @@
+{
+    "get": 
+    {
+        "summary": "Get All User",
+        "tags": ["Users"],
+        "responses": 
+        {
+            "200": {"description": "OK"},
+            "400": {"description": "Bad Request"}
+        }
+    },
+    "post": 
+    {
+        "summary": "Create New User",
+        "tags": ["Users"],
+        "requestBody": {
+            "required": true,
+            "content": {
+                "application/json": {
+                "examples": {
+                    "basic": {
+                        "value": {
+                            "fullName": "string",
+                            "phoneNum": "string",
+                            "email": "string",
+                            "DoB": "date",
+                            "status": "bool",
+                            "loginType": "string",
+                            "username": "string",
+                            "password": "string"
+                        }
+                    }
+                }
+                }
+            }
+        },
+        "responses": 
+        {
+            "200": {"description": "OK"},
+            "400": {"description": "Bad Request"}
+        }
+    },
+    "put": 
+    {
+        "summary": "Get User Info",
+        "tags": ["Users"],
+        "requestBody": {
+            "required": true,
+            "content": {
+                "application/json": {
+                "examples": {
+                    "basic": {
+                        "value": {
+                            "_id": "objectID",
+                            "fullName": "string",
+                            "phoneNum": "string",
+                            "email": "string",
+                            "DoB": "date",
+                            "status": "bool",
+                            "loginType": "string",
+                            "username": "string",
+                            "password": "string"
+                        }
+                    }
+                }
+                }
+            }
+        },
+        "responses": 
+        {
+            "200": {"description": "OK"},
+            "400": {"description": "Bad Request"}
+        }
+    }
+}

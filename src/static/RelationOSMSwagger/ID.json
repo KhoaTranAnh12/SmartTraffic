@@ -1,0 +1,21 @@
+{
+  "get": {
+    "summary": "Get Relations Info By ID",
+    "tags": ["RelationOSM"],
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "ID của item cần lấy"
+      }
+    ],
+    "responses": {
+      "200": { "description": "OK" },
+      "400": { "description": "Bad Request" }
+    }
+  }
+}

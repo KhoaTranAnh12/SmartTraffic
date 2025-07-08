@@ -1,0 +1,40 @@
+{
+  "get": {
+    "summary": "Get All Relations",
+    "tags": ["RelationOSM"],
+    "responses": {
+      "200": { "description": "OK" },
+      "400": { "description": "Bad Request" }
+    }
+  },
+  "put": {
+    "summary": "Get Relations Info",
+    "tags": ["RelationOSM"],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "examples": {
+            "basic": {
+              "value": {
+                "type": "relation",
+                "id": "int",
+                "members": ["array of nodeID and wayID"],
+                "tags": "object",
+                "version": "n.version",
+                "timestamp": "datetimeisoformat",
+                "changeset": "int",
+                "uid": "int",
+                "user": "int"
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": { "description": "OK" },
+      "400": { "description": "Bad Request" }
+    }
+  }
+}

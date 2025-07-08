@@ -1,0 +1,59 @@
+{
+  "get": {
+    "summary": "Get All Notifications",
+    "tags": ["Notifications"],
+    "responses": {
+      "200": { "description": "OK" },
+      "400": { "description": "Bad Request" }
+    }
+  },
+  "post": {
+    "summary": "Create New Notifications",
+    "tags": ["Notifications"],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "examples": {
+            "basic": {
+              "value": {
+                "userID": "objectId",
+                "type": "string",
+                "content": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": { "description": "OK" },
+      "400": { "description": "Bad Request" }
+    }
+  },
+  "put": {
+    "summary": "Get Notifications Info",
+    "tags": ["Notifications"],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "examples": {
+            "basic": {
+              "value": {
+                "_id": "objectID",
+                "userID": "objectId",
+                "type": "string",
+                "content": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": { "description": "OK" },
+      "400": { "description": "Bad Request" }
+    }
+  }
+}

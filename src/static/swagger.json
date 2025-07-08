@@ -1,37 +1,114 @@
 {
-    "openapi" : "3.0.0",
-    "info": {"title": "Sample API", "version": "1.0"},
-    "paths": {
-        "/": {
-            "get": 
-            {
-                "summary": "Get Data Info",
-                "params":{
-                    "id": 1
-                },
-                "responses": 
-                {
-                    "200": {"description": "OK"},
-                    "400": {"description": "Bad Request"}
-                }
-            }
-        }
+  "openapi": "3.0.0",
+  "info": { "title": "Sample API", "version": "1.0" },
+  "tags": [
+    {
+      "name": "Users",
+      "description": "Quản lý người dùng"
     },
-    "components": {
-    "schemas": {
-        "Data": {
-            "type": "object",
-            "properties": {
-                "ID": { "type": "integer" },
-                "segmentID": { "type": "integer" },
-                "uploaderID": { "type": "integer" },
-                "type": { "type": "string"},
-                "infoID": { "type": "integer" },
-                "dataInfoID": { "type": "integer" },
-                "uploadDate": {"type": "datetime", "format": "dd/mm/yyyy"}
-            },
-            "required": ["ID", "segmentID","uploaderID","type","infoID","dataInfoID"]
-        }
+    {
+      "name": "Data",
+      "description": "Quản lý Dữ liệu"
+    },
+    {
+      "name": "Notifications",
+      "description": "Quản lý Thông báo"
+    },
+    {
+      "name": "Images",
+      "description": "Quản lý hình ảnh"
+    },
+    {
+      "name": "Texts",
+      "description": "Quản lý văn bản"
+    },
+    {
+      "name": "TrafficStatusInfos",
+      "description": "Quản lý thông tin trạng thái"
+    },
+    {
+      "name": "NodeOSM",
+      "description": "Quản lý các Nodes"
+    },
+    {
+      "name": "WayOSM",
+      "description": "Quản lý các WayOSM"
+    },
+    {
+      "name": "RelationOSM",
+      "description": "Quản lý các RelationOSM"
+    },
+    {
+      "name": "Segments",
+      "description": "Quản lý các Segments"
+    }
+  ],
+  "paths": {
+    "/data/{id}": {
+      "$ref": "./dataSwagger/ID.json"
+    },
+    "/data/": {
+      "$ref": "./dataSwagger/noID.json"
+    },
+    "/user/{id}": {
+      "$ref": "./userSwagger/ID.json"
+    },
+    "/user": {
+      "$ref": "./userSwagger/noID.json"
+    },
+    "/auth/login": {
+      "$ref": "./authSwagger/login.json"
+    },
+    "/auth/refresh": {
+      "$ref": "./authSwagger/refresh.json"
+    },
+    "/notifications/{id}": {
+      "$ref": "./notificationSwagger/ID.json"
+    },
+    "/notifications/": {
+      "$ref": "./notificationSwagger/noID.json"
+    },
+    "/image/{id}": {
+      "$ref": "./imageSwagger/ID.json"
+    },
+    "/image/": {
+      "$ref": "./imageSwagger/noID.json"
+    },
+    "/text/{id}": {
+      "$ref": "./textSwagger/ID.json"
+    },
+    "/text/": {
+      "$ref": "./textSwagger/noID.json"
+    },
+    "/trafficStatusInfo/{id}": {
+      "$ref": "./trafficStatusInfoSwagger/ID.json"
+    },
+    "/trafficStatusInfo/": {
+      "$ref": "./trafficStatusInfoSwagger/noID.json"
+    },
+    "/nodeOSM/{id}": {
+      "$ref": "./NodeOSMSwagger/ID.json"
+    },
+    "/nodeOSM/": {
+      "$ref": "./NodeOSMSwagger/noID.json"
+    },
+    "/wayOSM/{id}": {
+      "$ref": "./WayOSMSwagger/ID.json"
+    },
+    "/wayOSM/": {
+      "$ref": "./WayOSMSwagger/noID.json"
+    },
+    "/relationOSM/{id}": {
+      "$ref": "./RelationOSMSwagger/ID.json"
+    },
+    "/relationOSM/": {
+      "$ref": "./RelationOSMSwagger/noID.json"
+    },
+    "/segment/{id}": {
+      "$ref": "./SegmentSwagger/ID.json"
+    },
+    "/segment/": {
+      "$ref": "./SegmentSwagger/noID.json"
     }
   }
 }

@@ -1,0 +1,44 @@
+{
+    "get": 
+        {
+            "summary": "Get Data Info By ID",
+            "tags": ["Data"],
+            "parameters":[
+                {
+                "name": "id",
+                "in": "path",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                },
+                "description": "ID của item cần lấy"
+                }
+            ],
+            "responses": 
+            {
+                "200": {"description": "OK"},
+                "400": {"description": "Bad Request"}
+            }
+        },
+        "delete": 
+        {
+            "summary": "Delete Data By ID",
+            "tags": ["Data"],
+            "parameters":[
+                {
+                "name": "id",
+                "in": "path",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                },
+                "description": "ID của item cần lấy"
+                }
+            ],
+            "responses": 
+            {
+                "200": {"description": "OK"},
+                "400": {"description": "Bad Request"}
+            }
+        }
+}

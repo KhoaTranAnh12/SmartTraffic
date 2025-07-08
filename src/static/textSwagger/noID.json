@@ -1,0 +1,60 @@
+{
+  "get": {
+    "summary": "Get All Text",
+    "tags": ["Texts"],
+    "responses": {
+      "200": { "description": "OK" },
+      "400": { "description": "Bad Request" }
+    }
+  },
+  "post": {
+    "summary": "Create New Text",
+    "tags": ["Texts"],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "examples": {
+            "basic": {
+              "value": {
+                "dataID": "objectId",
+                "source": "string",
+                "content": "string",
+                "encoding": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": { "description": "OK" },
+      "400": { "description": "Bad Request" }
+    }
+  },
+  "put": {
+    "summary": "Get Text Info",
+    "tags": ["Texts"],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "examples": {
+            "basic": {
+              "value": {
+                "dataID": "objectId",
+                "source": "string",
+                "content": "string",
+                "encoding": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": { "description": "OK" },
+      "400": { "description": "Bad Request" }
+    }
+  }
+}

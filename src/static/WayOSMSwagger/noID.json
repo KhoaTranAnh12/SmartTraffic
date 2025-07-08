@@ -1,0 +1,40 @@
+{
+  "get": {
+    "summary": "Get All Ways",
+    "tags": ["WayOSM"],
+    "responses": {
+      "200": { "description": "OK" },
+      "400": { "description": "Bad Request" }
+    }
+  },
+  "put": {
+    "summary": "Get Ways Info",
+    "tags": ["WayOSM"],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "examples": {
+            "basic": {
+              "value": {
+                "type": "way",
+                "id": "int",
+                "nodes": ["array of nodes"],
+                "tags": "object",
+                "version": "n.version",
+                "timestamp": "datetimeisoformat",
+                "changeset": "int",
+                "uid": "int",
+                "user": "int"
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": { "description": "OK" },
+      "400": { "description": "Bad Request" }
+    }
+  }
+}

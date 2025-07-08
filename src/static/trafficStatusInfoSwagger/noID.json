@@ -1,0 +1,62 @@
+{
+  "get": {
+    "summary": "Get All TrafficStatusInfo",
+    "tags": ["TrafficStatusInfos"],
+    "responses": {
+      "200": { "description": "OK" },
+      "400": { "description": "Bad Request" }
+    }
+  },
+  "post": {
+    "summary": "Create New TrafficStatusInfo",
+    "tags": ["TrafficStatusInfos"],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "examples": {
+            "basic": {
+              "value": {
+                "TrafficStatusID": "objectID",
+                "velocity": "int"
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": { "description": "OK" },
+      "400": { "description": "Bad Request" }
+    }
+  },
+  "put": {
+    "summary": "Get TrafficStatusInfo Info",
+    "tags": ["TrafficStatusInfos"],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "examples": {
+            "basic": {
+              "value": {
+                "TrafficStatusID": "objectID",
+                "velocity": "int",
+                "statuses": {
+                  "AccidentFlag": "bool",
+                  "Flooded": "bool",
+                  "PoliceFlag": "bool",
+                  "TrafficJamFlag": "bool"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": { "description": "OK" },
+      "400": { "description": "Bad Request" }
+    }
+  }
+}

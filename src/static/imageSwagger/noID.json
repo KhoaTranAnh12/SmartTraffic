@@ -1,0 +1,62 @@
+{
+  "get": {
+    "summary": "Get All Image",
+    "tags": ["Images"],
+    "responses": {
+      "200": { "description": "OK" },
+      "400": { "description": "Bad Request" }
+    }
+  },
+  "post": {
+    "summary": "Create New Image",
+    "tags": ["Images"],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "examples": {
+            "basic": {
+              "value": {
+                "dataID": "objectId",
+                "source": "string",
+                "length": "int",
+                "contentType": "string",
+                "encoding": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": { "description": "OK" },
+      "400": { "description": "Bad Request" }
+    }
+  },
+  "put": {
+    "summary": "Get Image Info",
+    "tags": ["Images"],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "examples": {
+            "basic": {
+              "value": {
+                "dataID": "objectId",
+                "source": "string",
+                "length": "int",
+                "contentType": "string",
+                "encoding": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": { "description": "OK" },
+      "400": { "description": "Bad Request" }
+    }
+  }
+}

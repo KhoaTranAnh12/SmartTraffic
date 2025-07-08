@@ -1,0 +1,43 @@
+{
+  "get": {
+    "summary": "Get All Nodes",
+    "tags": ["NodeOSM"],
+    "responses": {
+      "200": { "description": "OK" },
+      "400": { "description": "Bad Request" }
+    }
+  },
+  "put": {
+    "summary": "Get Nodes Info",
+    "tags": ["NodeOSM"],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "examples": {
+            "basic": {
+              "value": {
+                "type": "node",
+                "id": "int",
+                "location": {
+                  "type": "Point",
+                  "coordinates": ["n.location.lon", "n.location.lat"]
+                },
+                "tags": "object",
+                "version": "n.version",
+                "timestamp": "datetimeisoformat",
+                "changeset": "int",
+                "uid": "int",
+                "user": "int"
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": { "description": "OK" },
+      "400": { "description": "Bad Request" }
+    }
+  }
+}

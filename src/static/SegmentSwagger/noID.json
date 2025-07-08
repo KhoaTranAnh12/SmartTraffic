@@ -1,0 +1,41 @@
+{
+  "get": {
+    "summary": "Get All Segments",
+    "tags": ["Segments"],
+    "responses": {
+      "200": { "description": "OK" },
+      "400": { "description": "Bad Request" }
+    }
+  },
+  "put": {
+    "summary": "Get Segments Info",
+    "tags": ["Segments"],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "examples": {
+            "basic": {
+              "value": {
+                "type": "segment",
+                "id": "int",
+                "way_id": "WayOSMID",
+                "nodes": ["array of nodes"],
+                "tags": "object",
+                "version": "n.version",
+                "timestamp": "datetimeisoformat",
+                "changeset": "int",
+                "uid": "int",
+                "user": "int"
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": { "description": "OK" },
+      "400": { "description": "Bad Request" }
+    }
+  }
+}

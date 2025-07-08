@@ -1,0 +1,76 @@
+{
+    "get": 
+    {
+        "summary": "Get All Data",
+        "tags": ["Data"],
+        "responses": 
+        {
+            "200": {"description": "OK"},
+            "400": {"description": "Bad Request"}
+        }
+    },
+    "post": 
+    {
+        "summary": "Create New Data",
+        "tags": ["Data"],
+        "requestBody": {
+            "required": true,
+            "content": {
+                "application/json": {
+                "examples": {
+                    "basic": {
+                        "value": {
+                            "segmentID": "string",
+                            "uploaderID": "objectId",
+                            "type": {
+                                "bsonType": "string",
+                                "enum": ["image", "video", "text", "speech"]
+                            },
+                            "InfoID": "objectId",
+                            "uploadTime": "date",
+                            "location": "string"
+                        }
+                    }
+                }
+                }
+            }
+        },
+        "responses": 
+        {
+            "200": {"description": "OK"},
+            "400": {"description": "Bad Request"}
+        }
+    },
+    "put": 
+    {
+        "summary": "Get Data Info",
+        "tags": ["Data"],
+        "requestBody": {
+            "required": true,
+            "content": {
+                "application/json": {
+                "examples": {
+                    "basic": {
+                        "value": {
+                            "_id": "objectID",
+                            "fullName": "string",
+                            "phoneNum": "string",
+                            "email": "string",
+                            "DoB": "date",
+                            "status": "bool",
+                            "loginType": "string",
+                            "username": "string",
+                            "password": "string"
+                        }
+                    }
+                }
+                }
+            }
+        },
+        "responses": 
+        {
+            "200": {"description": "OK"},
+            "400": {"description": "Bad Request"}
+        }
+    }
+}
