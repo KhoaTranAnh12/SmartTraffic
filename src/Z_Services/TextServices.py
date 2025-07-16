@@ -34,6 +34,20 @@ def findTextByID(id):
     except PyMongoError as e:
         raise e
 
+def findTextByDataIDList(idlist):
+    try:
+        objList = []
+        for dataID in idlist: objList.append(ObjectId(dataID))
+        res = textTable.find({"dataID": {'$in': [objList]}})
+        if res == None: return {}, 200
+        res = list(res)
+        for i in res:
+            i['_id'] = str(i['_id'])
+            i['dataID'] = str(i['dataID'])
+        return res, 200
+    except PyMongoError as e:
+        raise e
+
 def insertText(body):
     try:
         body['dataID'] = ObjectId(body['dataID'])

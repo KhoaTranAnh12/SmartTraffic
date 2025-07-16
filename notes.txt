@@ -1,0 +1,31 @@
+image:
+getAll: Cần quyền admin.
+get theo ID: 
+cần biết được phần uploader rồi mới lấy được. Mà uploader nằm trong data => Lấy data có imageID = id của image và có loại tệp là image.
+insert: không cần.
+update: không cần (ID giữ nguyên, uploader giữ nguyên), nếu cần kỹ thì check Uploader có giữ nguyên không
+(findImage theo ID, xong rồi check cũ = mới không).
+delete: Chắc k có. Hiện tại delete vẫn available nhưng về sau không có đâu.
+
+
+text: Tương tự image. Data phần textID sẽ bị sửa lại thành null.
+
+
+
+statusInfo:
+getAll: admin
+get theo ID: cần biết được phần uploader rồi mới lấy được. Mà uploader nằm trong data => Lấy data có statusInfo = id của statusInfo.
+insert: không cần.
+update: Uploader giữ nguyên
+delete tương tự getID
+
+
+user:
+getAll: admin
+get theo ID: admin, auth có id
+insert: k Cần
+update: userID, tên đăng nhập giữ nguyên.
+delete: như get theo ID.
+
+
+riêng mảng data: Mọi thứ tương tự, riêng delete thì phải delete kèm image hoặc text đi kèm.

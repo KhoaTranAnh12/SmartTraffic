@@ -27,6 +27,56 @@ def findAllData():
 def findDataByID(id):
     try:
         res = dataTable.find_one({"_id": ObjectId(id)})
+        
+        if res == None: return {}, 200
+        res['_id'] = str(res['_id'])
+        res['uploaderID'] = str(res['uploaderID'])
+        res['InfoID'] = str(res['InfoID'])
+        print(res)
+        return res, 200
+    except PyMongoError as e:
+        raise e
+
+def findDataByUploaderID(id):
+    try:
+        res = dataTable.find({"uploaderID": ObjectId(id)})
+        if res == None: return {}, 200
+        res=list(res)
+        for data in res:
+            data['_id'] = str(data['_id'])
+            data['uploaderID'] = str(data['uploaderID'])
+            data['InfoID'] = str(data['InfoID'])
+        return res, 200
+    except PyMongoError as e:
+        raise e
+    
+def findDataByStatusInfoID(id):
+    try:
+        res = dataTable.find({"InfoID": ObjectId(id)})
+        if res == None: return {}, 200
+        res=list(res)
+        for data in res:
+            data['_id'] = str(data['_id'])
+            data['uploaderID'] = str(data['uploaderID'])
+            data['InfoID'] = str(data['InfoID'])
+        return res, 200
+    except PyMongoError as e:
+        raise e
+
+def findDataByImageID(id):
+    try:
+        res = dataTable.find_one({"infoID": ObjectId(id), "type": 'image'})
+        if res == None: return {}, 200
+        res['_id'] = str(res['_id'])
+        res['uploaderID'] = str(res['uploaderID'])
+        res['InfoID'] = str(res['InfoID'])
+        return res, 200
+    except PyMongoError as e:
+        raise e
+    
+def findDataByTextID(id):
+    try:
+        res = dataTable.find_one({"infoID": ObjectId(id), "type": 'text'})
         if res == None: return {}, 200
         res['_id'] = str(res['_id'])
         res['uploaderID'] = str(res['uploaderID'])
@@ -72,6 +122,6 @@ def deleteData(id):
         if res == None: 
             return jsonify({"error": "Not Found"}), 404
         res = dataTable.delete_one({"_id": ObjectId(id)})
-        return jsonify({"message": "Succesful"}), 200
+        return jsonify({"message": "Successful"}), 200
     except PyMongoError as e:
         raise e

@@ -7,20 +7,34 @@ user_blueprint = Blueprint('user',__name__)
 
 @user_blueprint.before_request
 def userBeforeRequest():
-    print("before user")
+    access_token = request.headers.get('Authorization')
+    if not access_token:
+        return 'No access token in header', 401
+    try:
+        checkToken(access_token)
+    except Exception as e:
+        print(e)
+        return str(e), 401
 
 @user_blueprint.get('/')
 def getAllUser():
     try:
-        res = findAllUser()
-        return res
+        access_token = request.headers.get('Authorization')
+        if checkAdmin(access_token):
+            res = findAllUser()
+            return res
+        else:
+            return 'Forbidden', 403
     except Exception as e:
         print(e)
         return str(e), 500
 @user_blueprint.get('/<id>')
 def getUserID(id):
     try:
+        access_token = request.headers.get('Authorization')
         res = findUserByID(id)
+        if res[0]['_id'] != checkToken(access_token)[0] and not checkAdmin(access_token): 
+            return 'Forbidden', 403
         return res
     except Exception as e:
         print(e)
@@ -36,13 +50,13 @@ def insertUserInstance():
             return jsonify({"error": "Bad Request"}), 400
         
         #Trường Required
-        if 'fullName' not in user or 'username' not in user or 'password' not in user: 
+        if 'fullName' not in user or 'username' not in user or 'password' not in user or 'admin' not in user: 
             return jsonify({"error": "Missing Required Values"}), 400 
         
         #Đảm bảo các trường có đúng không
         for key in user.keys():
             print(key)
-            if key not in ["fullName" , "phoneNum" , "DoB" , "status" , "loginType" , "username" , "password", "email"]:
+            if key not in ["fullName" , "phoneNum" , "DoB" , "status" , "loginType" , "username" , "password", "email", 'admin']:
                 return jsonify({"error": "Wrong key provided"}), 400 
         
         res = insertUser(user)
@@ -64,9 +78,12 @@ def changeUserInstance():
         #Đảm bảo các trường có đúng không
         for key in user.keys():
             print(key)
-            if key not in ["fullName" , "phoneNum" , "DoB" , "status" , "loginType" , "username" , "password", "email", "_id"]:
+            if key not in ["fullName" , "phoneNum" , "DoB" , "status" , "loginType" , "username" , "password", "email", "_id", 'admin']:
                 return jsonify({"error": "Wrong key provided"}), 400 
             
+        compareUser = findUserByID(user['_id'])
+        if compareUser['username']!=user['username']:
+            return jsonify({"error": "DataID is different from the original one"}), 400
 
         res = updateUser(user)
         return res
@@ -77,9 +94,10 @@ def changeUserInstance():
 @user_blueprint.delete('/<id>')
 def deleteUserID(id):
     try:
-        print(len(id))
-        if len(id)!=24:
-            return jsonify({"error": "Bad Request"}), 400
+        access_token = request.headers.get('Authorization')
+        user = findUserByID(id)
+        if user[0]['_id'] != checkToken(access_token)[0] and not checkAdmin(access_token): 
+            return 'Forbidden', 403
         res = deleteUser(id)
         return res
     except Exception as e:

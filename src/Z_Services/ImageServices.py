@@ -9,24 +9,24 @@ client = TrafficMongoClient()
 #Toàn bộ giá trị trả về trong phần Try đều phải trả về bằng tuple (res, statusCode)
 #Toàn bộ dữ liệu không phải string thì update lại
 
-textTable = client.db["texts"]
+imageTable = client.db["images"]
 
-def findAllText():
+def findAllImage():
     try:
         #["dataID", "source", "length", "contentType", "encoding"]:
-        res = textTable.find()
+        res = imageTable.find()
         res = list(res)
-        for text in res:
-            text['_id'] = str(text['_id'])
-            text['dataID'] = str(text['dataID'])
+        for image in res:
+            image['_id'] = str(image['_id'])
+            image['dataID'] = str(image['dataID'])
         return res, 200
     except PyMongoError as e:
         raise e
 
 
-def findTextByID(id):
+def findImageByID(id):
     try:
-        res = textTable.find_one({"_id": ObjectId(id)})
+        res = imageTable.find_one({"_id": ObjectId(id)})
         if res == None: return {}, 200
         res['_id'] = str(res['_id'])
         res['dataID'] = str(res['dataID'])
@@ -34,36 +34,50 @@ def findTextByID(id):
     except PyMongoError as e:
         raise e
 
-def insertText(body):
+def findImageByDataIDList(idlist):
+    try:
+        objList = []
+        for dataID in idlist: objList.append(ObjectId(dataID))
+        res = imageTable.find({"dataID": {'$in': [objList]}})
+        if res == None: return {}, 200
+        res = list(res)
+        for img in res:
+            img['_id'] = str(img['_id'])
+            img['dataID'] = str(img['dataID'])
+        return res, 200
+    except PyMongoError as e:
+        raise e
+
+def insertImage(body):
     try:
         body['dataID'] = ObjectId(body['dataID'])
-        textTable.insert_one(body)
+        imageTable.insert_one(body)
         del body['_id']
         body['dataID'] = str(body['dataID'])
         return body, 201
     except PyMongoError as e:
         raise e
-def updateText(body):
+def updateImage(body):
     try:
         body['_id'] = ObjectId(body['_id'])
         body['dataID'] = ObjectId(body['dataID'])
-        res = textTable.find_one({"_id": body['_id']})
+        res = imageTable.find_one({"_id": body['_id']})
         if res == None: 
             return jsonify({"error": "Not Found"}), 404
         
-        textTable.update_one({'_id': body['_id']}, {"$set": body})
+        imageTable.update_one({'_id': body['_id']}, {"$set": body})
         del body['_id']
         body['dataID'] = str(body['dataID'])
         return body, 201
     except PyMongoError as e:
         raise e
 
-def deleteText(id):
+def deleteImage(id):
     try:
-        res = textTable.find_one({"_id": ObjectId(id)})
+        res = imageTable.find_one({"_id": ObjectId(id)})
         if res == None: 
             return jsonify({"error": "Not Found"}), 404
-        res = textTable.delete_one({"_id": ObjectId(id)})
+        res = imageTable.delete_one({"_id": ObjectId(id)})
         return jsonify({"message": "Successful"}), 200
     except PyMongoError as e:
         raise e

@@ -9,6 +9,8 @@ import hmac
 import hashlib
 import base64
 import bcrypt
+from flask_jwt_extended import decode_token
+from jwt.exceptions import InvalidTokenError
 
 client = TrafficMongoClient()
 from flask_jwt_extended import (
@@ -36,17 +38,44 @@ def checkPassword(username,password,checkhash):
     key = hmac.new(secretKey.encode('utf-8'),username.encode('utf-8') + password.encode('utf-8'),hashlib.sha256).digest()
     return bcrypt.checkpw(key,checkhash.encode('utf-8'))
 
+
+def checkToken(accessTok):
+    try:
+        decoded = decode_token(accessTok)  # Tự động xác minh chữ ký và thời gian hết hạn
+        print("Token hợp lệ:", decoded)
+        id = decoded['sub'] #Lấy identity
+        if findUserByID(id)[0]!={}:
+            return id, 201
+        else:
+            raise "Invalid Token!"
+    except InvalidTokenError as e:
+        print("Token không hợp lệ:", str(e))
+        raise e
+    
+def checkAdmin(accessTok):
+    try:
+        decoded = decode_token(accessTok)  # Tự động xác minh chữ ký và thời gian hết hạn
+        print("Token hợp lệ:", decoded)
+        id = decoded['sub'] #Lấy identity
+        user = findUserByID(id)[0]
+        if user != {}:
+            if user['admin']: return True
+        else:
+            return False
+    except InvalidTokenError as e:
+        print("Token không hợp lệ:", str(e))
+        raise e
+
 def login(body):
     try:
         account = userTable.find_one({"username": body["username"]})
         if account == None: return 'Invalid Username and Password!', 400
         if checkPassword(body['username'],body['password'],account['password']):
-            print('aaaaaaa')
-            access_token = create_access_token(identity=body["username"])
-            refresh_token = create_refresh_token(identity=body["username"])
+            access_token = create_access_token(identity=str(account["_id"]))
+            refresh_token = create_refresh_token(identity=str(account["_id"]))
             refreshTokenTable.insert_one({
                 "token": refresh_token,
-                "username": body["username"],
+                "userID": account["_id"],
                 "expiredAt": datetime.now() + timedelta(days=7)
             })
             return {'access_token': access_token, 'refresh_token': refresh_token}, 200
@@ -93,7 +122,7 @@ def findUserByID(id):
 def findUserByUsername(username):
     try:
         res = userTable.find_one({"username": username})
-        if res == None: return {}, 200
+        if res == None: return {"msg": "Not found"}, 404
         res['_id'] = str(res['_id'])
         return res, 200
     except PyMongoError as e:
@@ -102,7 +131,7 @@ def findUserByUsername(username):
 
 def insertUser(body):
     try:
-        body["DoB"] = datetime.strptime(body["DoB"],"%Y/%m/%d")
+        if body['DoB']: body["DoB"] = datetime.strptime(body["DoB"],"%Y/%m/%d")
         body["password"] = hashPassword(body["username"],body["password"])
         userTable.insert_one(body)
         del body['_id']
@@ -111,13 +140,12 @@ def insertUser(body):
         raise e
 def updateUser(body):
     try:
-        body["DoB"] = datetime.strptime(body["DoB"],"%Y/%m/%d")
+        if body['DoB']: body["DoB"] = datetime.strptime(body["DoB"],"%Y/%m/%d")
         body['_id'] = ObjectId(body['_id'])
         body["password"] = hashPassword(body["username"],body["password"])
         res = userTable.find_one({"_id": body['_id']})
         if res == None: 
-            return jsonify({"error": "Not Found"}), 404
-        
+            return jsonify({"error": "Not Found"}), 40
         userTable.update_one({'_id': body['_id']}, {"$set": body})
         del body['_id']
         return body, 201

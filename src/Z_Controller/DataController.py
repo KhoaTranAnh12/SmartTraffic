@@ -1,26 +1,43 @@
 from flask import Blueprint, request, jsonify
 from Z_Services.DataServices import *
+from Z_Services.UserServices import checkToken,checkAdmin
+from Z_Services.ImageServices import deleteImage
+from Z_Services.TextServices import deleteText
 from pymongo.errors import PyMongoError
 data_blueprint = Blueprint('data',__name__)
 
 #Res gọi bằng Service đều trả không cần tuple, nếu phát sinh lỗi thì trả tuple hết.
 
 @data_blueprint.before_request
-def dataBeforeRequest():
-    print("before data")
+def dataBeforeRequest(): #Check token người dùng
+    access_token = request.headers.get('Authorization')
+    if not access_token:
+        return 'No access token in header', 401
+    try:
+        checkToken(access_token)
+    except Exception as e:
+        print(e)
+        return str(e), 401
 
 @data_blueprint.get('/')
 def getAllData():
     try:
-        res = findAllData()
-        return res
+        access_token = request.headers.get('Authorization')
+        if checkAdmin(access_token):
+            res = findAllData()
+            return res
+        else:
+            return 'Forbidden', 403
     except Exception as e:
         print(e)
         return str(e), 500
 @data_blueprint.get('/<id>')
 def getDataID(id):
     try:
+        access_token = request.headers.get('Authorization')
         res = findDataByID(id)
+        if res[0]['uploaderID'] != checkToken(access_token)[0] and not checkAdmin(access_token): 
+            return 'Forbidden', 403
         return res
     except Exception as e:
         print(e)
@@ -69,18 +86,26 @@ def changeDataInstance():
             if key not in ["segmentID","uploaderID","type","InfoID","uploadTime","processed","processed_time","TrainValTest","location","_id"]:
                 return jsonify({"error": "Wrong key provided"}), 400 
 
+        checkData = findDataByID(data['_id'])
+        if data['uploaderID'] != checkData['uploaderID']: 
+            return jsonify({"error": "uploaderID is different from the original one"}), 400
         res = updateData(data)
-        return res
+        return res         
     except Exception as e:
         print(e)
         return str(e), 500
     
 @data_blueprint.delete('/<id>')
-def deleteDataID(id):
+def deleteDataID(id): #Phải xóa image, video kèm theo (nếu có) và xóa luôn status của data đó
     try:
-        print(len(id))
-        if len(id)!=24:
-            return jsonify({"error": "Bad Request"}), 400
+        access_token = request.headers.get('Authorization')
+        res = findDataByID(id)
+        if res[0]['uploaderID'] != checkToken(access_token)[0] and not checkAdmin(access_token): 
+            return 'Forbidden', 403
+        if res[0]['type'] == 'text':
+            deleteText(res[0]['InfoID'])
+        elif res[0]['type'] == 'image':
+            deleteImage(res[0]['InfoID'])
         res = deleteData(id)
         return res
     except Exception as e:

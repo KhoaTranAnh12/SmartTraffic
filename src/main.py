@@ -29,7 +29,7 @@ CORS(app)
 load_dotenv()
 app.config['SECRET_KEY'] = os.getenv('SECRET')  # Thay bằng khóa bí mật mạnh
 app.config['JWT_SECRET_KEY'] = os.getenv('JWTSECRET')  # Khóa riêng cho JWT
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(minutes=15)
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=2)
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=7)
 
 jwt = JWTManager(app)                           

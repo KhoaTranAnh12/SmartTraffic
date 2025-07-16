@@ -9,7 +9,7 @@ client = TrafficMongoClient()
 #Toàn bộ giá trị trả về trong phần Try đều phải trả về bằng tuple (res, statusCode)
 #Toàn bộ dữ liệu không phải string thì update lại
 
-trafficStatusInfoTable = client.db["trafficStatusInfos"]
+trafficStatusInfoTable = client.db["statusInfos"]
 
 def findAllTrafficStatusInfo():
     try:
@@ -30,6 +30,7 @@ def findTrafficStatusInfoByID(id):
         return res, 200
     except PyMongoError as e:
         raise e
+
 
 def insertTrafficStatusInfo(body):
     try:

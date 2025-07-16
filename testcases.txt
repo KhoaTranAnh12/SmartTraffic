@@ -1,0 +1,17 @@
+kỹ thuật equal partition
+
+Về API bth:
+crud bth và thiếu/invalid gì đó ở body hay url param.
+
+Về Authorization:
+Image, Text:
+Before: check Token.
+getAll: Authorization: Có admin và không có admin.
+getImage theo ID: có Admin, không admin và đúng uploader, không admin và sai uploader.
+chỉnh sửa: Bình thường và ID != dataID (Chỉnh sửa: chỉnh sửa tập đính kèm => dataID không đổi.)
+về delete: có Admin, không admin và đúng uploader, không admin và sai uploader.
+
+Đối với nghiệp vụ của image và text, sẽ có phần tìm theo userID để có thể mà lấy thông tin mình đã gửi.
+getImage theo uploaderID: cần mỗi auth: có admin và đúng uploader.
+
+StatusInfo:

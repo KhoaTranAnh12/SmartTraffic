@@ -10,6 +10,7 @@ class TrafficMongoClient:
     def __init__(self):
         try:
             load_dotenv()
+            # print(os.getenv('MONGO_CLIENT'))
             self.client = pymongo.MongoClient(os.getenv('MONGO_CLIENT')) #Mongoclient se thay the bang bien trong .env
             self.db = self.client[os.getenv('TRAFFIC_DB')] #Ten DB se duoc thay bang bien tren db
         except PyMongoError as e:
@@ -101,12 +102,17 @@ class TrafficMongoClient:
             self.db.create_collection("statusInfos", validator={
                 "$jsonSchema": {
                     "bsonType": "object",
-                    "required": ["TrafficStatusID"],
+                    "required": ["velocity, statuses"],
                     "properties": {
-                        "TrafficStatusID": {"bsonType": "objectId"},
                         "velocity": {"bsonType": "int"},
                         "statuses": {
                             "bsonType": "object",
+                            "required": [
+                                'AccidentFlag',
+                                'Flooded',
+                                'PoliceFlag',
+                                'TrafficJamFlag'
+                            ],
                             "properties": {
                                 "AccidentFlag":{"bsonType": "bool"},
                                 "Flooded": {"bsonType": "bool"},
@@ -125,7 +131,7 @@ class TrafficMongoClient:
             self.db.create_collection("users", validator={
                 "$jsonSchema": {
                     "bsonType": "object",
-                    "required": ["fullName", "username", "password"],
+                    "required": ["fullName", "username", "password", "admin"],
                     "properties": {
                         "fullName": {"bsonType": "string"},
                         "phoneNum": {"bsonType": "string"},
@@ -134,7 +140,8 @@ class TrafficMongoClient:
                         "status": {"bsonType": "bool"},
                         "loginType": {"bsonType": "string"},
                         "username": {"bsonType": "string"},
-                        "password": {"bsonType": "string"}
+                        "password": {"bsonType": "string"},
+                        "admin": {"bsonType": "bool"}
                     }
                 }
             })
@@ -441,6 +448,7 @@ class OSMHandler(o.SimpleHandler):
         }
         try:
             self.nodes.insert_one(doc)
+            print(f'node {n.id}')
         except PyMongoError as e:
             print(e)
             sys.exit(1)
@@ -461,6 +469,7 @@ class OSMHandler(o.SimpleHandler):
         }
         try:
             self.ways.insert_one(doc)
+            print(f'way {w.id}')
         except PyMongoError as e:
             print(e)
             sys.exit(1)
@@ -514,6 +523,7 @@ class OSMHandler(o.SimpleHandler):
         }
         try:
             self.relations.insert_one(doc)
+            print(f'relation {r.id}')
         except PyMongoError as e:
             print(e)
             sys.exit(1)
