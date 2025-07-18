@@ -198,12 +198,10 @@ class TrafficMongoClient:
             self.db.create_collection("texts", validator={
                 "$jsonSchema": {
                     "bsonType": "object",
-                    "required": ["dataID", "source", "content", "encoding"],
+                    "required": ["dataID", "source"],
                     "properties": {
                         "dataID": {"bsonType": "objectId"},
-                        "source": {"bsonType": "string"},
-                        "content": {"bsonType": "string"},
-                        "encoding": {"bsonType": "string"},
+                        "source": {"bsonType": "string"}
                     }
                 }
             })

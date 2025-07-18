@@ -3,6 +3,8 @@ from Z_Services.TextServices import *
 from Z_Services.DataServices import findDataByTextID, findDataByUploaderID
 from Z_Services.UserServices import checkToken,checkAdmin
 from pymongo.errors import PyMongoError
+import time
+import os
 text_blueprint = Blueprint('text',__name__)
 
 #Res gọi bằng Service đều trả không cần tuple, nếu phát sinh lỗi thì trả tuple hết.
@@ -79,16 +81,32 @@ def insertTextInstance():
             return jsonify({"error": "Bad Request"}), 400
         #["dataID", "source", "length", "contentType", "encoding"]
         #Trường Required
-        if 'dataID' not in text or 'source' not in text or 'length' not in text or 'contentType' not in text or 'encoding' not in text: 
+        if 'dataID' not in text or 'content' not in text: 
             return jsonify({"error": "Missing Required Values"}), 400 
         
         #Đảm bảo các trường có đúng không
         for key in text.keys():
-            if key not in ["dataID", "source", "length", "contentType", "encoding"]:
+            if key not in ["dataID", "content"]:
                 return jsonify({"error": "Wrong key provided"}), 400 
         
-        res = insertText(text)
+        #Xử lý viết file vào storage
+        fileName = f'text_{time.time()}.txt'
+
+        #Đưa vào db
+        inputDb = {
+            "dataID" : text['dataID'],
+            'source': fileName
+        }
+        res = insertText(inputDb)
+
+        #Xử lý viết file vào storage
+        if res[1]==200:
+            source = os.getenv('STORAGE') + '/texts/unverified/' + fileName
+            print(source)
+            with open(source, 'w') as f:
+                f.write(text['content'])
         return res
+        
     except Exception as e:
         print(e)
         return str(e), 500
@@ -105,15 +123,36 @@ def changeTextInstance():
         
         #Đảm bảo các trường có đúng không
         for key in text.keys():
-            if key not in ["dataID", "source", "length", "contentType", "encoding", "_id"]:
+            if key not in ["_id","dataID", "content"]:
                 return jsonify({"error": "Wrong key provided"}), 400 
         
         #Tìm dataID của text cũ và so sánh
-        compareText = findTextByID(text['_id'])
+        compareText = findTextByID(text['_id'])[0]
+        print(compareText)
         if compareText['dataID']!=text['dataID']:
             return jsonify({"error": "DataID is different from the original one"}), 400
 
-        res = updateText(text)
+        #Xoá tệp cũ
+        oldfileName = os.getenv('STORAGE') + '/texts/unverified/' + compareText['source']
+        if(os.path.exists(oldfileName)):
+            os.remove(oldfileName)
+            
+        #Xử lý viết file vào storage
+        fileName = f'text_{time.time()}.txt'
+
+        #Đưa vào db
+        inputDb = {
+            '_id': text['_id'],
+            "dataID" : text['dataID'],
+            'source': fileName
+        }
+        res = updateText(inputDb)
+        #Xử lý viết file vào storage
+        if res[1]==201:
+            source = os.getenv('STORAGE') + '/texts/unverified/' + fileName
+            print(source)
+            with open(source, 'w') as f:
+                f.write(text['content'])
         return res
     except Exception as e:
         print(e)

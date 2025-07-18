@@ -25,6 +25,21 @@
               }
             }
           }
+        },
+        "multipart/form-data": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "dataID": {
+                "type": "string",
+                "description": "objID"
+              },
+              "fileUpload": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
         }
       }
     },
@@ -48,6 +63,25 @@
                 "length": "int",
                 "contentType": "string",
                 "encoding": "string"
+              }
+            }
+          }
+        },
+        "multipart/form-data": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "description": "objectID"
+              },
+              "dataID": {
+                "type": "string",
+                "description": "objectID"
+              },
+              "fileUpload": {
+                "type": "string",
+                "format": "binary"
               }
             }
           }

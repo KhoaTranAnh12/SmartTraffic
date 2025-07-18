@@ -18,9 +18,7 @@
             "basic": {
               "value": {
                 "dataID": "objectId",
-                "source": "string",
-                "content": "string",
-                "encoding": "string"
+                "content": "string"
               }
             }
           }
@@ -43,9 +41,7 @@
             "basic": {
               "value": {
                 "dataID": "objectId",
-                "source": "string",
-                "content": "string",
-                "encoding": "string"
+                "content": "string"
               }
             }
           }

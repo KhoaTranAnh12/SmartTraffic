@@ -7,14 +7,7 @@ user_blueprint = Blueprint('user',__name__)
 
 @user_blueprint.before_request
 def userBeforeRequest():
-    access_token = request.headers.get('Authorization')
-    if not access_token:
-        return 'No access token in header', 401
-    try:
-        checkToken(access_token)
-    except Exception as e:
-        print(e)
-        return str(e), 401
+    pass
 
 @user_blueprint.get('/')
 def getAllUser():
