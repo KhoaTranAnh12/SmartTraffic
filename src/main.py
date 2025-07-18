@@ -61,4 +61,22 @@ app.register_blueprint(segment_blueprint,url_prefix='/segment')
 
 
 if __name__ == "__main__":
+    # Danh sách các thư mục cần tạo
+    directories = [
+        "storage/images/unverified",
+        "storage/images/v_test",
+        "storage/images/v_train",
+        "storage/images/v_val",
+        "storage/models",
+        "storage/texts/unverified",
+        "storage/texts/v_test",
+        "storage/texts/v_train",
+        "storage/texts/v_val"
+    ]
+
+    # Tạo các thư mục
+    for directory in directories:
+        if not os.path.exists(directory):
+            os.makedirs(directory, exist_ok=True)
+            print(f"Created directory: {directory}")
     app.run(debug=True)
