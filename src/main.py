@@ -13,6 +13,7 @@ from Z_Controller.WayOSMController import wayOSM_blueprint
 from Z_Controller.RelationOSMController import relationOSM_blueprint
 from Z_Controller.SegmentController import segment_blueprint
 from Z_Controller.TextController import text_blueprint
+from EvaluationLib.main import *
 from datetime import datetime, timedelta
 from flask_jwt_extended import (
     JWTManager
@@ -61,22 +62,4 @@ app.register_blueprint(segment_blueprint,url_prefix='/segment')
 
 
 if __name__ == "__main__":
-    # Danh sách các thư mục cần tạo
-    directories = [
-        "storage/images/unverified",
-        "storage/images/v_test",
-        "storage/images/v_train",
-        "storage/images/v_val",
-        "storage/models",
-        "storage/texts/unverified",
-        "storage/texts/v_test",
-        "storage/texts/v_train",
-        "storage/texts/v_val"
-    ]
-
-    # Tạo các thư mục
-    for directory in directories:
-        if not os.path.exists(directory):
-            os.makedirs(directory, exist_ok=True)
-            print(f"Created directory: {directory}")
     app.run(debug=True)

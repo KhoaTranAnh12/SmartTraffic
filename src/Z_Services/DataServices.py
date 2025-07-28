@@ -87,10 +87,13 @@ def findDataByTextID(id):
 
 def insertData(body):
     try:
-
         body['uploaderID'] = ObjectId(body['uploaderID'])
-        body['InfoID'] = ObjectId(body['InfoID'])
-        body["uploadTime"] = datetime.strptime(body["uploadTime"],"%Y/%m/%d")
+        body['InfoID'] = None
+        body["uploadTime"] = datetime.today()
+        body['processed'] = False
+        body['processed_time'] = None
+        body['TrainValTest'] = 0
+        body['location'] = ''
         dataTable.insert_one(body)
         del body['_id']
         body['uploaderID'] = str(body['uploaderID'])
@@ -100,18 +103,22 @@ def insertData(body):
         raise e
 def updateData(body):
     try:
-
+        print(body)
         body['uploaderID'] = ObjectId(body['uploaderID'])
         body['InfoID'] = ObjectId(body['InfoID'])
-        body["uploadTime"] = datetime.strptime(body["uploadTime"],"%Y/%m/%d")
+        body["uploadTime"] = datetime.today()
         body['_id'] = ObjectId(body['_id'])
         res = dataTable.find_one({"_id": body['_id']})
+        print('abc')
         if res == None: 
             return jsonify({"error": "Not Found"}), 404
+        print(body)
         dataTable.update_one({'_id': body['_id']}, {"$set": body})
-        del body['_id']
+        print('a')
         body['uploaderID'] = str(body['uploaderID'])
         body['InfoID'] = str(body['InfoID'])
+        body['_id'] = str(body['_id'])
+        print(body)
         return body, 201
     except PyMongoError as e:
         raise e

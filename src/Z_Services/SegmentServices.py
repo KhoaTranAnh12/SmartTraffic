@@ -9,31 +9,31 @@ client = TrafficMongoClient()
 #Toàn bộ dữ liệu không phải string thì update lại
 
 
-segmentOSMTable = client.db["segmentOSM"]
+segmentTable = client.db["segments"]
 #["type","id","way_id","segments","tags","version","timestamp","changeset","uid","user"]:
-def findAllNodeOSM():
+def findAllSegment():
     try:
-        res = segmentOSMTable.find()
+        res = segmentTable.find()
         res = list(res)
         return res, 200
     except PyMongoError as e:
         raise e
 
 
-def findNodeOSMByID(id):
+def findSegmentByID(id):
     try:
-        res = segmentOSMTable.find_one({"id": id})
+        res = segmentTable.find_one({"id": id})
         if res == None: return {}, 200
         return res, 200
     except PyMongoError as e:
         raise e
 
-def updateNodeOSM(body):
+def updateSegment(body):
     try:
-        res = segmentOSMTable.find_one({"id": body['id']})
+        res = segmentTable.find_one({"id": body['id']})
         if res == None: 
             return jsonify({"error": "Not Found"}), 404
-        segmentOSMTable.update_one({'id': body['id']}, {"$set": body})
+        segmentTable.update_one({'id': body['id']}, {"$set": body})
         return body, 201
     except PyMongoError as e:
         raise e

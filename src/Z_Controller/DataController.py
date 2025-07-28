@@ -1,11 +1,15 @@
 from flask import Blueprint, request, jsonify
 from Z_Services.DataServices import *
 from Z_Services.UserServices import checkToken,checkAdmin
+from Z_Services.ImageServices import findImageByID
 from Z_Services.ImageServices import deleteImage
 from Z_Services.TextServices import deleteText
 from pymongo.errors import PyMongoError
+from EvaluationLib.main import *
+from EvaluationLib.image.lib.AITest import *
 data_blueprint = Blueprint('data',__name__)
-
+from dotenv import *
+import os
 #Res gọi bằng Service đều trả không cần tuple, nếu phát sinh lỗi thì trả tuple hết.
 
 @data_blueprint.before_request
@@ -53,12 +57,12 @@ def insertDataInstance():
             return jsonify({"error": "Bad Request"}), 400
         
         #Trường Required
-        if 'uploaderID' not in data or 'type' not in data or 'uploadTime' not in data: 
+        if 'uploaderID' not in data or 'type' not in data: 
             return jsonify({"error": "Missing Required Values"}), 400 
         
         #Đảm bảo các trường có đúng không
         for key in data.keys():
-            if key not in ["segmentID","uploaderID","type","InfoID","uploadTime","processed","processed_time","TrainValTest","location"]:
+            if key not in ["segmentID","uploaderID","type","InfoID","processed","processed_time","TrainValTest","location"]:
                 return jsonify({"error": "Wrong key provided"}), 400 
         
         res = insertData(data)
@@ -107,6 +111,107 @@ def deleteDataID(id): #Phải xóa image, video kèm theo (nếu có) và xóa l
         elif res[0]['type'] == 'image':
             deleteImage(res[0]['InfoID'])
         res = deleteData(id)
+        return res
+    except Exception as e:
+        print(e)
+        return str(e), 500
+
+@data_blueprint.get('/eval/<id>')
+def evaluateStatus(id):
+    try:
+        data = findDataByID(id)[0]
+        infoID = data['InfoID']
+        if data['type'] == 'image':
+            img = findImageByID(infoID)[0]
+            imgSrc = os.getenv('STORAGE') + '/images/unverified/' + img['source']
+            print(imgSrc)
+            policeEval = TestForPolices(imgSrc)
+            obstaclesEval = TestForObstacles(imgSrc)
+            trafficJamEval = TestForTJam(imgSrc)
+            floodedEval = TestForFlooded(imgSrc)
+            return ({
+                "policeEval": 
+                {
+                    "status": policeEval[0],
+                    "score": policeEval[1]
+                },
+                "obstaclesEval":{
+                    "status": obstaclesEval[0],
+                    "score": obstaclesEval[1]
+                },
+                "trafficJamEval": {
+                    "status": trafficJamEval[0],
+                    "score": trafficJamEval[1]
+                },
+                "floodedEval": {
+                    "status": floodedEval[0],
+                    "score": floodedEval[1]
+                },
+                "type": 'img'}, 200)
+        elif data['type'] == 'text':
+            data = findDataByID(id)[0]
+            infoID = data['InfoID']
+            policeEval = EvaluateRandomExample()
+            obstaclesEval = EvaluateRandomExample()
+            trafficJamEval = EvaluateRandomExample()
+            floodedEval = EvaluateRandomExample()
+            return ({
+                "policeEval": 
+                {
+                    "status": policeEval[0],
+                    "score": policeEval[1]
+                },
+                "obstaclesEval":{
+                    "status": obstaclesEval[0],
+                    "score": obstaclesEval[1]
+                },
+                "trafficJamEval": {
+                    "status": trafficJamEval[0],
+                    "score": trafficJamEval[1]
+                },
+                "floodedEval": {
+                    "status": floodedEval[0],
+                    "score": floodedEval[1]
+                },
+                "type": 'text'}, 200)
+    except Exception as e:
+        print(e)
+        return str(e), 500
+@data_blueprint.put('/autoVerify') #Cần thêm swagger
+def autoVerify(type):
+    try:
+        print('abc')
+    except Exception as e:
+        print(e)
+        return str(e), 500
+    
+@data_blueprint.put('/manualVerify') #Cần thêm swagger
+def toggleManualVerify():
+    try:
+        #Check Admin
+        access_token = request.headers.get('Authorization')
+        if not checkAdmin(access_token): 
+            return 'Forbidden', 403
+        body = request.get_json()
+        data = findDataByID(body['_id'])
+        data["processed"] = not data["processed"]
+        res = updateData(data)
+        return res
+    except Exception as e:
+        print(e)
+        return str(e), 500
+
+@data_blueprint.put('/trainValTest') #Cần thêm swagger
+def putTrainValTestValue():
+    try:
+        #Check Admin
+        access_token = request.headers.get('Authorization')
+        if not checkAdmin(access_token): 
+            return 'Forbidden', 403
+        body = request.get_json()
+        data = findDataByID(body['_id'])
+        data["processed"] = not data["processed"]
+        res = updateData(data)
         return res
     except Exception as e:
         print(e)

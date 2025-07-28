@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from Z_Services.TextServices import *
-from Z_Services.DataServices import findDataByTextID, findDataByUploaderID
-from Z_Services.UserServices import checkToken,checkAdmin
+from Z_Services.DataServices import findDataByTextID, findDataByUploaderID,findDataByID,updateData
+from Z_Services.UserServices import checkToken,checkAdmin,findUserByUsername
 from pymongo.errors import PyMongoError
 import time
 import os
@@ -51,14 +51,15 @@ def getTextID(id):
 
 
 
-@text_blueprint.get('/uploader/<id>') #New, chưa thêm swagger
-def getTextByUploaderID(id):
+@text_blueprint.get('/uploader/<username>') #New, chưa thêm swagger
+def getTextByUploaderUsername(username):
     try:
+        userID = findUserByUsername(username)[0]['_id']
         #Check Token xem có đúng uploader hay admin hay không
         access_token = request.headers.get('Authorization')
-        if checkAdmin(access_token) or checkToken(access_token)[0] == id:
+        if checkAdmin(access_token) or checkToken(access_token)[0] == userID:
             #Services chỉ có Data theo uploader mà thôi. Ta tìm data sau đó lọc để tìm text.
-            dataList = findDataByUploaderID(id)
+            dataList = findDataByUploaderID(userID)
             idList = []
             for data in dataList[0]:
                 if data['type'] == 'text':
@@ -91,14 +92,19 @@ def insertTextInstance():
         
         #Xử lý viết file vào storage
         fileName = f'text_{time.time()}.txt'
-
+        data = findDataByID(text['dataID'])[0]
+        print(data)
+        if data['type'] != 'text': return {'error': 'Wrong Data Type!'}, 400
         #Đưa vào db
         inputDb = {
             "dataID" : text['dataID'],
             'source': fileName
         }
         res = insertText(inputDb)
-
+        print(res)
+        data['InfoID'] = res[0]['_id']
+        print(data)
+        updateData(data)
         #Xử lý viết file vào storage
         if res[1]==200:
             source = os.getenv('STORAGE') + '/texts/unverified/' + fileName

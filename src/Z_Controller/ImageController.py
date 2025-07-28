@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from Z_Services.ImageServices import *
-from Z_Services.DataServices import findDataByImageID, findDataByUploaderID
-from Z_Services.UserServices import checkToken,checkAdmin
+from Z_Services.DataServices import findDataByImageID, findDataByUploaderID, findDataByID, updateData
+from Z_Services.UserServices import checkToken,checkAdmin,findUserByUsername
 from pymongo.errors import PyMongoError
 import time
 image_blueprint = Blueprint('image',__name__)
@@ -51,18 +51,24 @@ def getImageID(id):
 
 
 
-@image_blueprint.get('/uploader/<id>') #New, chưa thêm swagger
-def getImageByUploaderID(id):
+@image_blueprint.get('/uploader/<username>') #New, chưa thêm swagger
+def getImageByUploaderUsername(username): #Xem lại
     try:
+        print(username)
         #Check Token xem có đúng uploader hay admin hay không
+        print(findUserByUsername(username)[0])
+        userID = findUserByUsername(username)[0]['_id']
         access_token = request.headers.get('Authorization')
-        if checkAdmin(access_token) or checkToken(access_token)[0] == id:
+        if checkAdmin(access_token) or checkToken(access_token)[0] == userID:
             #Services chỉ có Data theo uploader mà thôi. Ta tìm data sau đó lọc để tìm image.
-            dataList = findDataByUploaderID(id) #(cursor, 200)
+            dataList = findDataByUploaderID(userID) #(cursor, 200)
             idList = []
+            print(len(dataList[0]))
             for data in dataList[0]:
+                print(data['type'])
                 if data['type'] == 'image':
                     idList.append(str(data['_id']))
+            print(idList)
             res = findImageByDataIDList(idList)
             return res
         else:
@@ -106,7 +112,12 @@ def insertImageInstance():
                 'contentType' : contentType,
                 "encoding" : "None"
             }
+            data = findDataByID(dataID)[0]
+            if data['type'] != 'image': return {'error': 'Wrong Data Type!'}, 400
             res = insertImage(image)
+            imgID = res[0]['_id']
+            data['InfoID'] = imgID
+            updateData(data)
             image_upload.save(source)
             return res
         elif content_type == 'application/json':
@@ -125,7 +136,13 @@ def insertImageInstance():
                 if key not in ["dataID", "source", "length", "contentType", "encoding"]:
                     return jsonify({"error": "Wrong key provided"}), 400 
             
+            data = findDataByID(image['dataID'])[0]
+            if data['type'] != 'image': return {'error': 'Wrong Data Type!'}, 400
             res = insertImage(image)
+            print('abc')
+            imgID = res[0]['_id']
+            data['InfoID'] = imgID
+            updateData(data)
             return res
     except Exception as e:
         print(e)

@@ -1,0 +1,40 @@
+{
+  "get": {
+    "summary": "Get Reports Info By ID",
+    "tags": ["Reports"],
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "ID của item cần lấy"
+      }
+    ],
+    "responses": {
+      "200": { "description": "OK" },
+      "400": { "description": "Bad Request" }
+    }
+  },
+  "delete": {
+    "summary": "Delete Reports By ID",
+    "tags": ["Reports"],
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "ID của item cần lấy"
+      }
+    ],
+    "responses": {
+      "200": { "description": "OK" },
+      "400": { "description": "Bad Request" }
+    }
+  }
+}

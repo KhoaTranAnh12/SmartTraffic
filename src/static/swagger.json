@@ -56,6 +56,10 @@
     {
       "name": "Segments",
       "description": "Quản lý các Segments"
+    },
+    {
+      "name": "Reports",
+      "description": "Quản lý các Reports"
     }
   ],
   "paths": {
@@ -64,6 +68,9 @@
     },
     "/data/": {
       "$ref": "./dataSwagger/noID.json"
+    },
+    "/data/eval/{id}": {
+      "$ref": "./dataSwagger/eval.json"
     },
     "/user/{id}": {
       "$ref": "./userSwagger/ID.json"
@@ -89,7 +96,7 @@
     "/image/": {
       "$ref": "./imageSwagger/noID.json"
     },
-    "/image/uploader/{id}": {
+    "/image/uploader/{username}": {
       "$ref": "./imageSwagger/uploader.json"
     },
     "/text/{id}": {
@@ -98,7 +105,7 @@
     "/text/": {
       "$ref": "./textSwagger/noID.json"
     },
-    "/text/uploader/{id}": {
+    "/text/uploader/{username}": {
       "$ref": "./textSwagger/uploader.json"
     },
     "/trafficStatusInfo/{id}": {
@@ -133,6 +140,12 @@
     },
     "/segment/": {
       "$ref": "./SegmentSwagger/noID.json"
+    },
+    "/report/{id}": {
+      "$ref": "./reportSwagger/ID.json"
+    },
+    "/report": {
+      "$ref": "./reportSwagger/noID.json"
     }
   }
 }

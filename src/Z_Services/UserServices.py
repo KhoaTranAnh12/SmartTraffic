@@ -88,7 +88,7 @@ def refreshToken(body):
     try:
         refresh_token =  refreshTokenTable.find_one({
             "token": body["token"],
-            "username": body["username"],
+            "userID": body["_id"],
             "expiredAt": {'$gt': datetime.now()}
         })
         if refresh_token:
@@ -121,6 +121,7 @@ def findUserByID(id):
 
 def findUserByUsername(username):
     try:
+        print(username)
         res = userTable.find_one({"username": username})
         if res == None: return {"msg": "Not found"}, 404
         res['_id'] = str(res['_id'])

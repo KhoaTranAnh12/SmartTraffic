@@ -1,16 +1,16 @@
 {
   "get": {
-    "summary": "Get Text Info By Uploader ID",
+    "summary": "Get Text Info By Uploader Username",
     "tags": ["Texts"],
     "parameters": [
       {
-        "name": "id",
+        "name": "username",
         "in": "path",
         "required": true,
         "schema": {
           "type": "string"
         },
-        "description": "ID của item cần lấy"
+        "description": "Username của item cần lấy"
       }
     ],
     "responses": {

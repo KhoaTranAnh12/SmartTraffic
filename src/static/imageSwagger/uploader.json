@@ -1,16 +1,16 @@
 {
   "get": {
-    "summary": "Get Image Info By Uploader ID",
+    "summary": "Get Image Info By Uploader Username",
     "tags": ["Images"],
     "parameters": [
       {
-        "name": "id",
+        "name": "username",
         "in": "path",
         "required": true,
         "schema": {
           "type": "string"
         },
-        "description": "ID của item cần lấy"
+        "description": "Username của item cần lấy"
       }
     ],
     "responses": {

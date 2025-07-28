@@ -38,7 +38,7 @@ def findTextByDataIDList(idlist):
     try:
         objList = []
         for dataID in idlist: objList.append(ObjectId(dataID))
-        res = textTable.find({"dataID": {'$in': [objList]}})
+        res = textTable.find({"dataID": {'$in': objList}})
         if res == None: return {}, 200
         res = list(res)
         for i in res:
@@ -52,7 +52,7 @@ def insertText(body):
     try:
         body['dataID'] = ObjectId(body['dataID'])
         textTable.insert_one(body)
-        del body['_id']
+        body['_id'] = str(body['_id'])
         body['dataID'] = str(body['dataID'])
         return body, 201
     except PyMongoError as e:

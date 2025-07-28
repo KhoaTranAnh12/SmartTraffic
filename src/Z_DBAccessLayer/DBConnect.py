@@ -17,7 +17,7 @@ class TrafficMongoClient:
             print(e)
             
     def createDatabase(self):
-        time.sleep(10)
+        # time.sleep(10)
         for coll in self.db.list_collection_names():
             self.db.drop_collection(coll)
 
@@ -26,7 +26,7 @@ class TrafficMongoClient:
         self.createImageCollection()
         self.createTextCollection()
 
-        #Mang OSM #xong ctrl chưa có test chưa swagger
+        # Mang OSM #xong ctrl chưa có test chưa swagger
         self.createNodeOSMCollection()
         self.createWayOSMCollection()
         self.createRelationOSMCollection()
@@ -162,10 +162,10 @@ class TrafficMongoClient:
                             "bsonType": "string",
                             "enum": ["image", "text"]
                         },
-                        "InfoID": {"bsonType": "objectId"},
+                        "InfoID": {"bsonType": ["objectId","null"]},
                         "uploadTime": {"bsonType": "date"},
                         "processed": {"bsonType": "bool"},
-                        "processed_time": {"bsonType": "date"},
+                        "processed_time": {"bsonType": ["date","null"]},
                         "TrainValTest": {"bsonType": "int"},
                         "location": {"bsonType": "string"},
                     }
@@ -323,13 +323,14 @@ class TrafficMongoClient:
         self.db.create_collection("reports",validator={
             "$jsonSchema": {
                 "bsonType": "object",
-                    "required": ["way_id","nodes"],
+                    "required": ["senderID"],
                     "properties": {
-                        "senderID": {"bsonType": "objectId"},
-                        "textID": {"bsonType": "objectId"},
-                        "imageID": {"bsonType": "objectId"},
-                        "eval": {"bsonType": "float"},
-                        "qualified": {"bsonType": "bool"}
+                        "uploaderID": {"bsonType": "objectId"},
+                        "textID": {"bsonType": ["objectId","null"]},
+                        "imageID": {"bsonType": ["objectId","null"]},
+                        "eval": {"bsonType": "double"},
+                        "qualified": {"bsonType": "bool"},
+                        "createdDate": {"bsonType": "date"}
                     }
             }
         })
