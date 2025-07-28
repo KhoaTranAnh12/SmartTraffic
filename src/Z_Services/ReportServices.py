@@ -18,9 +18,9 @@ def findAllReport():
         res = list(res)
         for report in res:
             report['_id'] = str(report['_id'])
-            report['uploaderID'] = str(report['uploaderID'])
-            report['dataTextID'] = str(report['dataTextID'])
-            report['dataImgID'] = str(report['dataImgID'])
+            if report['uploaderID']: report['uploaderID'] = str(report['uploaderID'])
+            if report['dataTextID']: report['dataTextID'] = str(report['dataTextID'])
+            if report['dataImgID']: report['dataTextID'] = str(report['dataImgID'])
         return res, 200
     except PyMongoError as e:
         raise e
@@ -32,9 +32,9 @@ def findReportByID(id):
         
         if res == None: return {}, 200
         res['_id'] = str(res['_id'])
-        res['uploaderID'] = str(res['uploaderID'])
-        res['dataTextID'] = str(res['dataTextID'])
-        res['dataImgID'] = str(res['dataImgID'])
+        if res['uploaderID']: res['uploaderID'] = str(res['uploaderID'])
+        if res['dataTextID']: res['dataTextID'] = str(res['dataTextID'])
+        if res['dataImgID']: res['dataTextID'] = str(res['dataImgID'])
         print(res)
         return res, 200
     except PyMongoError as e:
@@ -47,9 +47,9 @@ def findReportByUploaderID(id):
         res=list(res)
         for report in res:
             report['_id'] = str(report['_id'])
-            report['uploaderID'] = str(report['uploaderID'])
-            report['dataTextID'] = str(report['dataTextID'])
-            report['dataImgID'] = str(report['dataImgID'])
+            if report['uploaderID']: report['uploaderID'] = str(report['uploaderID'])
+            if report['dataTextID']: report['dataTextID'] = str(report['dataTextID'])
+            if report['dataImgID']: report['dataTextID'] = str(report['dataImgID'])
         return res, 200
     except PyMongoError as e:
         raise e
@@ -59,9 +59,9 @@ def findReportByDataImageID(id):
         res = reportTable.find_one({"dataImgID": ObjectId(id)})
         if res == None: return {}, 200
         res['_id'] = str(res['_id'])
-        res['uploaderID'] = str(res['uploaderID'])
-        res['dataTextID'] = str(res['dataTextID'])
-        res['dataImgID'] = str(res['dataImgID'])
+        if res['uploaderID']: res['uploaderID'] = str(res['uploaderID'])
+        if res['dataTextID']: res['dataTextID'] = str(res['dataTextID'])
+        if res['dataImgID']: res['dataTextID'] = str(res['dataImgID'])
         return res, 200
     except PyMongoError as e:
         raise e
@@ -71,9 +71,9 @@ def findReportDataTextID(id):
         res = reportTable.find_one({"dataTextID": ObjectId(id)})
         if res == None: return {}, 200
         res['_id'] = str(res['_id'])
-        res['uploaderID'] = str(res['uploaderID'])
-        res['dataTextID'] = str(res['dataTextID'])
-        res['dataImgID'] = str(res['dataImgID'])
+        if res['uploaderID']: res['uploaderID'] = str(res['uploaderID'])
+        if res['dataTextID']: res['dataTextID'] = str(res['dataTextID'])
+        if res['dataImgID']: res['dataTextID'] = str(res['dataImgID'])
         return res, 200
     except PyMongoError as e:
         raise e
@@ -82,16 +82,14 @@ def findReportDataTextID(id):
 def insertReport(body):
     try:
         body['uploaderID'] = ObjectId(body['uploaderID'])
-        body['textID'] = None
-        body['imageID'] = None
+        body['dataTextID'] = None
+        body['dataImgID'] = None
         body["eval"] = 0
         body['qualified'] = False
         body['createdDate'] = datetime.today()
         reportTable.insert_one(body)
         body['_id'] = str(body['_id'])
         body['uploaderID'] = str(body['uploaderID'])
-        body['dataTextID'] = str(body['dataTextID'])
-        body['dataImgID'] = str(body['dataImgID'])
         return body, 201
     except PyMongoError as e:
         raise e
@@ -99,8 +97,8 @@ def updateReport(body):
     try:
         print(body)
         body['uploaderID'] = ObjectId(body['uploaderID'])
-        body['textID'] = ObjectId(body['textID'])
-        body['imageID'] = ObjectId(body['imageID'])
+        body['dataTextID'] = ObjectId(body['dataTextID'])
+        body['dataImgID'] = ObjectId(body['dataImgID'])
         body['_id'] = ObjectId(body['_id'])
         res = reportTable.find_one({"_id": body['_id']})
         print('abc')
@@ -110,9 +108,9 @@ def updateReport(body):
         reportTable.update_one({'_id': body['_id']}, {"$set": body})
         print('a')
         body['_id'] = str(body['_id'])
-        body['uploaderID'] = str(body['uploaderID'])
-        body['dataTextID'] = str(body['dataTextID'])
-        body['dataImgID'] = str(body['dataImgID'])
+        if body['uploaderID']: body['uploaderID'] = str(body['uploaderID'])
+        if body['dataTextID']: body['dataTextID'] = str(body['dataTextID'])
+        if body['dataImgID']: body['dataTextID'] = str(body['dataImgID'])
         print(body)
         return body, 201
     except PyMongoError as e:

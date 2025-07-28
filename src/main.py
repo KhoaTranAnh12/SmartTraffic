@@ -13,6 +13,7 @@ from Z_Controller.WayOSMController import wayOSM_blueprint
 from Z_Controller.RelationOSMController import relationOSM_blueprint
 from Z_Controller.SegmentController import segment_blueprint
 from Z_Controller.TextController import text_blueprint
+from Z_Controller.ReportController import report_blueprint
 from EvaluationLib.main import *
 from datetime import datetime, timedelta
 from flask_jwt_extended import (
@@ -59,7 +60,46 @@ app.register_blueprint(nodeOSM_blueprint,url_prefix='/nodeOSM')
 app.register_blueprint(wayOSM_blueprint,url_prefix='/wayOSM')
 app.register_blueprint(relationOSM_blueprint,url_prefix='/relationOSM')
 app.register_blueprint(segment_blueprint,url_prefix='/segment')
-
-
+app.register_blueprint(report_blueprint,url_prefix='/report')
 if __name__ == "__main__":
+    base_dir = "storage"
+
+# Create the main directory
+    os.makedirs(base_dir, exist_ok=True)
+
+    # Create subdirectories under storage
+    subdirs = [
+        "images",
+        "images/unverified",
+        "images/v_test/flooded",
+        "images/v_test/obstacles",
+        "images/v_test/police",
+        "images/v_test/trafficlam",
+        "images/v_train/flooded",
+        "images/v_train/obstacles",
+        "images/v_train/police",
+        "images/v_train/trafficlam",
+        "images/v_val/flooded",
+        "images/v_val/obstacles",
+        "images/v_val/police",
+        "images/v_val/trafficlam"
+        "images",
+        "texts/unverified",
+        "texts/v_test/flooded",
+        "texts/v_test/obstacles",
+        "texts/v_test/police",
+        "texts/v_test/trafficlam",
+        "texts/v_train/flooded",
+        "texts/v_train/obstacles",
+        "texts/v_train/police",
+        "texts/v_train/trafficlam",
+        "texts/v_val/flooded",
+        "texts/v_val/obstacles",
+        "texts/v_val/police",
+        "texts/v_val/trafficlam"
+    ]
+
+    # Create each subdirectory
+    for subdir in subdirs:
+        os.makedirs(os.path.join(base_dir, subdir), exist_ok=True)
     app.run(debug=True)

@@ -326,8 +326,8 @@ class TrafficMongoClient:
                     "required": ["senderID"],
                     "properties": {
                         "uploaderID": {"bsonType": "objectId"},
-                        "textID": {"bsonType": ["objectId","null"]},
-                        "imageID": {"bsonType": ["objectId","null"]},
+                        "dataTextID": {"bsonType": ["objectId","null"]},
+                        "dataImageID": {"bsonType": ["objectId","null"]},
                         "eval": {"bsonType": "double"},
                         "qualified": {"bsonType": "bool"},
                         "createdDate": {"bsonType": "date"}
@@ -531,4 +531,4 @@ class OSMHandler(o.SimpleHandler):
             
 
 # a = TrafficMongoClient()
-# a.createDatabase()
+# a.createReportCollection()
