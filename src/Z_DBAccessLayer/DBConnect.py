@@ -126,22 +126,22 @@ class TrafficMongoClient:
         except PyMongoError as e:
             print(e)
             
-    def createUserCollection(self):
+    def createUserCollection(self): #Da update Mongodb 2.0
         try:
             self.db.create_collection("users", validator={
                 "$jsonSchema": {
                     "bsonType": "object",
-                    "required": ["fullName", "username", "password", "admin"],
+                    "required": ["fullName", "username", "password", "admin", "status", 'email', 'DoB', 'loginType', 'phoneNum'],
                     "properties": {
-                        "fullName": {"bsonType": "string"},
-                        "phoneNum": {"bsonType": "string"},
-                        "email": {"bsonType": "string"},
-                        "DoB": {"bsonType": "date"},
-                        "status": {"bsonType": "bool"},
-                        "loginType": {"bsonType": "string"},
-                        "username": {"bsonType": "string"},
-                        "password": {"bsonType": "string"},
-                        "admin": {"bsonType": "bool"}
+                        "fullName": {"bsonType": "string"},#
+                        "phoneNum": {"bsonType": ["string","null"]},#
+                        "email": {"bsonType":["string","null"]},#
+                        "DoB": {"bsonType": ["date","null"]},#
+                        "status": {"bsonType": "bool"},#
+                        "loginType": {"bsonType": ["string","null"]},#
+                        "username": {"bsonType": "string"},#
+                        "password": {"bsonType": "string"},#
+                        "admin": {"bsonType": "bool"}#
                     }
                 }
             })
@@ -150,31 +150,32 @@ class TrafficMongoClient:
         except PyMongoError as e:
             print(e)
             
-    def createDataCollection(self):
+    def createDataCollection(self): #Updated Mongodb 2.0
         try:
             self.db.create_collection("data", validator={
                 "$jsonSchema": {
                     "bsonType": "object",
-                    "required": ["uploaderID", "type", "uploadTime"],
+                    "required": ["uploaderID", "type", "uploadTime", "reportID", "processed", "processed_time","TrainValTest"],
                     "properties": {
+                        "uploaderID": {"bsonType": "objectId"},#
                         "reportID": {"bsonType": "objectId"},
                         "type": {
                             "bsonType": "string",
                             "enum": ["image", "text"]
-                        },
+                        },#
                         "InfoID": {"bsonType": ["objectId","null"]},
-                        "uploadTime": {"bsonType": "date"},
+                        "uploadTime": {"bsonType": "date"},#
                         "processed": {"bsonType": "bool"},
                         "processed_time": {"bsonType": ["date","null"]},
                         "TrainValTest": {"bsonType": "int"},
-                        "location": {"bsonType": "string"},
+                        "location": {"bsonType": ["string","null"]},
                     }
                 }
             })
         except PyMongoError as e:
             print(e)
             
-    def createImageCollection(self):
+    def createImageCollection(self): #Khong can update
         try:
             self.db.create_collection("images", validator={
                 "$jsonSchema": {
@@ -193,7 +194,7 @@ class TrafficMongoClient:
         except PyMongoError as e:
             print(e)
             
-    def createTextCollection(self):
+    def createTextCollection(self): #Khong can update
         try:
             self.db.create_collection("texts", validator={
                 "$jsonSchema": {
@@ -209,14 +210,20 @@ class TrafficMongoClient:
         except PyMongoError as e:
             print(e)
             
-    def createNotificationCollection(self):
+    def createNotificationCollection(self): #Update UserID thành array với min là 1.
         try:
             self.db.create_collection("notifications", validator={
                 "$jsonSchema": {
                     "bsonType": "object",
                     "required": ["userID", "type", "content"],
                     "properties": {
-                        "userID": {"bsonType": "objectId"},
+                        "userID": {
+                            "bsonType": "array",
+                            "items":{
+                                "bsonType": 'objectId',
+                                "minItems": 1
+                            }
+                        },
                         "type": {"bsonType": "string"},
                         "content": {"bsonType": "string"},
                     }
@@ -224,7 +231,7 @@ class TrafficMongoClient:
             })
         except PyMongoError as e:
             print(e)
-    def createNodeOSMCollection(self):
+    def createNodeOSMCollection(self): #Vốn dĩ không cần update.
         try:
             self.db.create_collection("nodes", validator={
                 "$jsonSchema": {
@@ -250,7 +257,7 @@ class TrafficMongoClient:
         except PyMongoError as e:
             print(e)
             
-    def createSegmentCollection(self):
+    def createSegmentCollection(self): #Vốn dĩ không cần update.
         try:
             self.db.create_collection("segments", validator={
                 "$jsonSchema": {
@@ -273,7 +280,7 @@ class TrafficMongoClient:
             self.db.segments.create_index("id", unique=True)
         except PyMongoError as e:
             print(e)
-    def createWayOSMCollection(self):
+    def createWayOSMCollection(self):#Vốn dĩ không cần update.
         try:
             self.db.create_collection("ways", validator={
                 "$jsonSchema": {
@@ -296,7 +303,7 @@ class TrafficMongoClient:
         except PyMongoError as e:
             print(e)
             
-    def createRelationOSMCollection(self):
+    def createRelationOSMCollection(self): #Vốn dĩ không cần update.
         try:
             self.db.create_collection("relations", validator={
                 "$jsonSchema": {
@@ -323,7 +330,7 @@ class TrafficMongoClient:
         self.db.create_collection("reports",validator={
             "$jsonSchema": {
                 "bsonType": "object",
-                    "required": ["senderID"],
+                    "required": ["senderID", "dataTextID", "dataImageID", "eval", "qualified", "createdDate"],
                     "properties": {
                         "uploaderID": {"bsonType": "objectId"},
                         "dataTextID": {"bsonType": ["objectId","null"]},
@@ -335,7 +342,7 @@ class TrafficMongoClient:
             }
         })
 
-    def createRefreshTokenCollection(self):
+    def createRefreshTokenCollection(self): #Không cần update.
         self.db.create_collection("refreshTokens",validator={
             "$jsonSchema": {
                 "bsonType": "object",

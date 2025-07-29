@@ -88,12 +88,12 @@ def findDataByTextID(id):
 def insertData(body):
     try:
         body['uploaderID'] = ObjectId(body['uploaderID'])
-        body['InfoID'] = None
-        body["uploadTime"] = datetime.today()
-        body['processed'] = False
-        body['processed_time'] = None
-        body['TrainValTest'] = 0
-        body['location'] = ''
+        if not body['InfoID']: body['InfoID'] = None
+        if not body['uploadTime']: body["uploadTime"] = datetime.today()
+        if not body['processed']: body['processed'] = False
+        if not body['processed_time']: body['processed_time'] = None
+        if not body['TrainValTest']: body['TrainValTest'] = 0
+        if not body['location']: body['location'] = None
         dataTable.insert_one(body)
         del body['_id']
         body['uploaderID'] = str(body['uploaderID'])

@@ -133,6 +133,11 @@ def findUserByUsername(username):
 def insertUser(body):
     try:
         if body['DoB']: body["DoB"] = datetime.strptime(body["DoB"],"%Y/%m/%d")
+        else: body["DoB"] = None
+        if not body['email']: body['email'] = None
+        if not body['phoneNum']: body['phoneNum'] = None
+        if not body['status']: body['phoneNum'] = True
+        if not body['loginType']: body['loginType'] = None
         body["password"] = hashPassword(body["username"],body["password"])
         userTable.insert_one(body)
         del body['_id']
