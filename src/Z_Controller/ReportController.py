@@ -1,7 +1,8 @@
 from flask import Blueprint, request, jsonify
 from Z_Services.ReportServices import *
 from Z_Services.UserServices import checkAdmin, checkToken
-from Z_Services.DataServices import deleteData
+from Z_Services.DataServices import deleteData,findDataByID
+from Z_Controller.DataController import evaluateStatus
 from pymongo.errors import PyMongoError
 report_blueprint = Blueprint('report',__name__)
 
@@ -26,6 +27,19 @@ def getAllReport():
         access_token = request.headers.get('Authorization')
         if checkAdmin(access_token):
             res = findAllReport()
+            return res
+        else:
+            return 'Forbidden', 403 
+    except Exception as e:
+        print(e)
+        return str(e), 500
+    
+@report_blueprint.get('/notQualified')
+def getAllUnqualifiedReport():
+    try:
+        access_token = request.headers.get('Authorization')
+        if checkAdmin(access_token):
+            res = findAllUnqualifiedReport()
             return res
         else:
             return 'Forbidden', 403 
@@ -137,6 +151,40 @@ def deleteReportID(id): #Phải xóa image, video kèm theo (nếu có) và xóa
             deleteData(res[0]['imageID'])
         res = deleteReport(id)
         return res
+    except Exception as e:
+        print(e)
+        return str(e), 500
+    
+@report_blueprint.put('/autoVerify') #Cần thêm swagger
+def autoVerifybyID(id):
+    try:
+        report = findReportByID(id)
+        #Tìm textID và ImgID để tính toán
+        currTextID = report['dataTextID']
+        currImgID = report['dataImgID']
+        #Lấy Img và Text để chấm
+        text = evaluateStatus(currTextID)[0]
+        img = evaluateStatus(currImgID)[0]
+        #Dùng harmony để tính:
+        harmony = {}
+        for k in text.keys():
+            if text[k]['status']==img[k]['status']:
+                harmony[k] = {
+                    "status": text[k]['status'],
+                    "score": (text[k]['score']*img[k]['score']*2)/(text[k]['score']+img[k]['score'])
+                }
+            else:
+                if text[k]['status'] == False:
+                    harmony[k] = {
+                        "status": False,
+                        "score": (text[k]['score']*(1-img[k]['score'])*2)/(text[k]['score']+(1-img[k]['score']))
+                    }
+                else:
+                    harmony[k] = {
+                        "status": False,
+                        "score": ((1-text[k]['score'])*img[k]['score']*2)/((1-text[k]['score'])+img[k]['score'])
+                    }
+
     except Exception as e:
         print(e)
         return str(e), 500

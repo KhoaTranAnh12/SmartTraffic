@@ -177,13 +177,6 @@ def evaluateStatus(id):
     except Exception as e:
         print(e)
         return str(e), 500
-@data_blueprint.put('/autoVerify') #Cần thêm swagger
-def autoVerify(type):
-    try:
-        print('abc')
-    except Exception as e:
-        print(e)
-        return str(e), 500
     
 @data_blueprint.put('/manualVerify') #Cần thêm swagger
 def toggleManualVerify():

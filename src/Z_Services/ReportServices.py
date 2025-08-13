@@ -25,6 +25,18 @@ def findAllReport():
     except PyMongoError as e:
         raise e
 
+def findAllUnqualifiedReport():
+    try:
+        res = reportTable.find({'qualified': False})
+        res = list(res)
+        for report in res:
+            report['_id'] = str(report['_id'])
+            if report['uploaderID']: report['uploaderID'] = str(report['uploaderID'])
+            if report['dataTextID']: report['dataTextID'] = str(report['dataTextID'])
+            if report['dataImgID']: report['dataTextID'] = str(report['dataImgID'])
+        return res, 200
+    except PyMongoError as e:
+        raise e
 
 def findReportByID(id):
     try:
