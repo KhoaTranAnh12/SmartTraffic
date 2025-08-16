@@ -103,7 +103,7 @@ def insertReportInstance():
 
         #Đảm bảo các trường có đúng không
         for key in report.keys():
-            if key not in ["uploaderID", "textID", "imageID", "eval", "qualified", "createdDate"]:
+            if key not in ["uploaderID", "dataTextID", "dataImgID", "eval", "qualified", "createdDate"]:
                 return jsonify({"error": "Wrong key provided"}), 400 
         
         res = insertReport(report)
@@ -127,7 +127,7 @@ def changeReportInstance():
 
         #Đảm bảo các trường có đúng không
         for key in report.keys():
-            if key not in ["uploaderID", "textID", "imageID", "eval", "qualified"]:
+            if key not in ["uploaderID", "dataTextID", "dataImgID", "eval", "qualified", "createdDate"]:
                 return jsonify({"error": "Wrong key provided"}), 400
 
         checkReport = findReportByID(report['_id'])

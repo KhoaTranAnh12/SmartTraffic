@@ -100,11 +100,11 @@ def findReportDataTextID(id):
 def insertReport(body):
     try:
         body['uploaderID'] = ObjectId(body['uploaderID'])
-        body['dataTextID'] = None
-        body['dataImgID'] = None
-        body["eval"] = 0
-        body['qualified'] = False
-        body['createdDate'] = datetime.today()
+        if 'dataTextID' not in body: body['dataTextID'] = None
+        if 'dataImgID' not in body: body['dataImgID'] = None
+        if 'eval' not in body: body["eval"] = 0
+        if 'qualified' not in body: body['qualified'] = False
+        if 'createdDate' not in body: body['createdDate'] = datetime.today()
         reportTable.insert_one(body)
         body['_id'] = str(body['_id'])
         body['uploaderID'] = str(body['uploaderID'])
