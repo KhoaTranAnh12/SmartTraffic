@@ -1,0 +1,43 @@
+{
+  "post": {
+    "summary": "Create New Data & Image",
+    "tags": ["Images"],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "examples": {
+            "basic": {
+              "value": {
+                "uploaderID": "objectId",
+                "source": "string",
+                "length": "int",
+                "contentType": "string",
+                "encoding": "string"
+              }
+            }
+          }
+        },
+        "multipart/form-data": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "uploaderID": {
+                "type": "string",
+                "description": "objID"
+              },
+              "fileUpload": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": { "description": "OK" },
+      "400": { "description": "Bad Request" }
+    }
+  }
+}

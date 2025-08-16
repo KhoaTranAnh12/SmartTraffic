@@ -1,6 +1,7 @@
 import sys
 import pymongo
 from pymongo.errors import PyMongoError
+from pymongo import GEOSPHERE
 import osmium as o
 from datetime import datetime
 import time
@@ -17,7 +18,6 @@ class TrafficMongoClient:
             print(e)
             
     def createDatabase(self):
-        # time.sleep(10)
         for coll in self.db.list_collection_names():
             self.db.drop_collection(coll)
 
@@ -102,9 +102,8 @@ class TrafficMongoClient:
             self.db.create_collection("statusInfos", validator={
                 "$jsonSchema": {
                     "bsonType": "object",
-                    "required": ["velocity, statuses"],
+                    "required": ["statuses"],
                     "properties": {
-                        "velocity": {"bsonType": "int"},
                         "statuses": {
                             "bsonType": "object",
                             "required": [
@@ -158,7 +157,7 @@ class TrafficMongoClient:
                     "required": ["uploaderID", "type", "uploadTime", "reportID", "processed", "processed_time","TrainValTest"],
                     "properties": {
                         "uploaderID": {"bsonType": "objectId"},#
-                        "reportID": {"bsonType": "objectId"},
+                        "reportID": {"bsonType": ["objectId","null"]},
                         "type": {
                             "bsonType": "string",
                             "enum": ["image", "text"]
@@ -254,6 +253,7 @@ class TrafficMongoClient:
                 }
             })
             self.db.nodes.create_index("id", unique=True)
+            # self.db.nodes.create_index("location",GEOSPHERE)
         except PyMongoError as e:
             print(e)
             
@@ -337,7 +337,8 @@ class TrafficMongoClient:
                         "dataImageID": {"bsonType": ["objectId","null"]},
                         "eval": {"bsonType": "double"},
                         "qualified": {"bsonType": "bool"},
-                        "createdDate": {"bsonType": "date"}
+                        "createdDate": {"bsonType": "date"},
+                        "InfoID": {"bsonType": ["objectId","null"]}
                     }
             }
         })
@@ -349,6 +350,7 @@ class TrafficMongoClient:
                     "required": ["userID","token"],
                     "properties": {
                         "token": {"bsonType": "string"},
+                        "userID": {"bsonType": "objectId"},
                         "username": {"bsonType": "string"},
                         "expiredAt": {"bsonType": "date"},
                     }
@@ -484,7 +486,15 @@ class OSMHandler(o.SimpleHandler):
         # Tạo Segments từ Way
         node_refs = [n.ref for n in w.nodes]
         tags = dict(w.tags)
-        
+        # Mark cho 1 node
+        for node_ref in node_refs:
+            self.nodes.update_one(
+                {"id": node_ref},
+                {
+                    "$addToSet": {"belongs_to_ways": w.id}  # Thêm way_id vào mảng (không trùng lặp)
+                },
+                upsert=False  # Chỉ cập nhật nếu node đã tồn tại
+            )
         # Tạo segments với 2 hoặc 3 nodes
         for i in range(len(node_refs) - 1):  # Duyệt qua các node để tạo segment
             if i + 2 <= len(node_refs):  # Đảm bảo không vượt quá số node
@@ -501,6 +511,14 @@ class OSMHandler(o.SimpleHandler):
                     "uid": w.uid,
                     "user": w.user
                 }
+                for node_ref in segment_nodes:
+                    self.nodes.update_one(
+                        {"id": node_ref},
+                        {
+                            "$addToSet": {"belongs_to_segments": w.id}  # Thêm way_id vào mảng (không trùng lặp)
+                        },
+                        upsert=False  # Chỉ cập nhật nếu node đã tồn tại
+                    )
                 try:
                     self.segments.insert_one(segment_doc)
                 except PyMongoError as e:
@@ -534,8 +552,6 @@ class OSMHandler(o.SimpleHandler):
             print(e)
             sys.exit(1)
     
-    
-            
-
-# a = TrafficMongoClient()
-# a.createReportCollection()
+# mydb = TrafficMongoClient()
+# mydb.createDatabase()
+        

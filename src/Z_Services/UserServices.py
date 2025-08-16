@@ -76,6 +76,7 @@ def login(body):
             refreshTokenTable.insert_one({
                 "token": refresh_token,
                 "userID": account["_id"],
+                "username": account["username"],
                 "expiredAt": datetime.now() + timedelta(days=7)
             })
             return {'access_token': access_token, 'refresh_token': refresh_token}, 200
@@ -89,10 +90,11 @@ def refreshToken(body):
         refresh_token =  refreshTokenTable.find_one({
             "token": body["token"],
             "userID": body["_id"],
+            "username": body["username"],
             "expiredAt": {'$gt': datetime.now()}
         })
         if refresh_token:
-            access_token = create_access_token(identity=body["username"])
+            access_token = create_access_token(identity=body["_id"])
             return jsonify({'access_token': access_token}), 200
         else:
             return jsonify({'error': 'Invalid or expired refresh token'}), 401

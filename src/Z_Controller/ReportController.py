@@ -4,6 +4,7 @@ from Z_Services.UserServices import checkAdmin, checkToken
 from Z_Services.DataServices import deleteData,findDataByID
 from Z_Controller.DataController import evaluateStatus
 from pymongo.errors import PyMongoError
+import time
 report_blueprint = Blueprint('report',__name__)
 
 #Res gọi bằng Service đều trả không cần tuple, nếu phát sinh lỗi thì trả tuple hết.
@@ -155,7 +156,7 @@ def deleteReportID(id): #Phải xóa image, video kèm theo (nếu có) và xóa
         print(e)
         return str(e), 500
     
-@report_blueprint.put('/autoVerify') #Cần thêm swagger
+@report_blueprint.get('/autoVerify/<id>') #Cần thêm swagger
 def autoVerifybyID(id):
     try:
         report = findReportByID(id)
@@ -167,23 +168,34 @@ def autoVerifybyID(id):
         img = evaluateStatus(currImgID)[0]
         #Dùng harmony để tính:
         harmony = {}
+        fcount = 0
+        score = 0
         for k in text.keys():
             if text[k]['status']==img[k]['status']:
                 harmony[k] = {
                     "status": text[k]['status'],
                     "score": (text[k]['score']*img[k]['score']*2)/(text[k]['score']+img[k]['score'])
                 }
+                score += harmony[k]["score"]
             else:
+                fcount +=1
                 if text[k]['status'] == False:
                     harmony[k] = {
                         "status": False,
                         "score": (text[k]['score']*(1-img[k]['score'])*2)/(text[k]['score']+(1-img[k]['score']))
                     }
+                    score += harmony[k]["score"]
                 else:
                     harmony[k] = {
                         "status": False,
                         "score": ((1-text[k]['score'])*img[k]['score']*2)/((1-text[k]['score'])+img[k]['score'])
                     }
+                    score += harmony[k]["score"]
+        resEval = score/4
+        if fcount < 2 and resEval > 0.8:
+            report['qualified'] = True
+            report['eval'] = resEval
+
 
     except Exception as e:
         print(e)

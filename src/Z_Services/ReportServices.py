@@ -21,6 +21,7 @@ def findAllReport():
             if report['uploaderID']: report['uploaderID'] = str(report['uploaderID'])
             if report['dataTextID']: report['dataTextID'] = str(report['dataTextID'])
             if report['dataImgID']: report['dataTextID'] = str(report['dataImgID'])
+            if report['InfoID']: report['InfoID'] = str(report['InfoID'])
         return res, 200
     except PyMongoError as e:
         raise e
@@ -34,6 +35,7 @@ def findAllUnqualifiedReport():
             if report['uploaderID']: report['uploaderID'] = str(report['uploaderID'])
             if report['dataTextID']: report['dataTextID'] = str(report['dataTextID'])
             if report['dataImgID']: report['dataTextID'] = str(report['dataImgID'])
+            if report['InfoID']: report['InfoID'] = str(report['InfoID'])
         return res, 200
     except PyMongoError as e:
         raise e
@@ -47,6 +49,7 @@ def findReportByID(id):
         if res['uploaderID']: res['uploaderID'] = str(res['uploaderID'])
         if res['dataTextID']: res['dataTextID'] = str(res['dataTextID'])
         if res['dataImgID']: res['dataTextID'] = str(res['dataImgID'])
+        if res['InfoID']: res['InfoID'] = str(res['InfoID'])
         print(res)
         return res, 200
     except PyMongoError as e:
@@ -62,6 +65,7 @@ def findReportByUploaderID(id):
             if report['uploaderID']: report['uploaderID'] = str(report['uploaderID'])
             if report['dataTextID']: report['dataTextID'] = str(report['dataTextID'])
             if report['dataImgID']: report['dataTextID'] = str(report['dataImgID'])
+            if report['InfoID']: report['InfoID'] = str(report['InfoID'])
         return res, 200
     except PyMongoError as e:
         raise e
@@ -74,6 +78,7 @@ def findReportByDataImageID(id):
         if res['uploaderID']: res['uploaderID'] = str(res['uploaderID'])
         if res['dataTextID']: res['dataTextID'] = str(res['dataTextID'])
         if res['dataImgID']: res['dataTextID'] = str(res['dataImgID'])
+        if res['InfoID']: res['InfoID'] = str(res['InfoID'])
         return res, 200
     except PyMongoError as e:
         raise e
@@ -86,6 +91,7 @@ def findReportDataTextID(id):
         if res['uploaderID']: res['uploaderID'] = str(res['uploaderID'])
         if res['dataTextID']: res['dataTextID'] = str(res['dataTextID'])
         if res['dataImgID']: res['dataTextID'] = str(res['dataImgID'])
+        if res['InfoID']: res['InfoID'] = str(res['InfoID'])
         return res, 200
     except PyMongoError as e:
         raise e
@@ -102,6 +108,7 @@ def insertReport(body):
         reportTable.insert_one(body)
         body['_id'] = str(body['_id'])
         body['uploaderID'] = str(body['uploaderID'])
+        body['InfoID'] = None
         return body, 201
     except PyMongoError as e:
         raise e
@@ -111,6 +118,7 @@ def updateReport(body):
         body['uploaderID'] = ObjectId(body['uploaderID'])
         body['dataTextID'] = ObjectId(body['dataTextID'])
         body['dataImgID'] = ObjectId(body['dataImgID'])
+        body['InfoID'] = ObjectId(body['InfoID'])
         body['_id'] = ObjectId(body['_id'])
         res = reportTable.find_one({"_id": body['_id']})
         print('abc')
@@ -123,6 +131,7 @@ def updateReport(body):
         if body['uploaderID']: body['uploaderID'] = str(body['uploaderID'])
         if body['dataTextID']: body['dataTextID'] = str(body['dataTextID'])
         if body['dataImgID']: body['dataTextID'] = str(body['dataImgID'])
+        if body['InfoID']: body['InfoID'] = str(body['InfoID'])
         print(body)
         return body, 201
     except PyMongoError as e:

@@ -69,6 +69,12 @@
     "/data/": {
       "$ref": "./dataSwagger/noID.json"
     },
+    "/data/img": {
+      "$ref": "./dataSwagger/img.json"
+    },
+    "/data/text": {
+      "$ref": "./dataSwagger/text.json"
+    },
     "/data/eval/{id}": {
       "$ref": "./dataSwagger/eval.json"
     },
@@ -123,6 +129,9 @@
     "/nodeOSM/": {
       "$ref": "./NodeOSMSwagger/noID.json"
     },
+    "/nodeOSM/coor": {
+      "$ref": "./NodeOSMSwagger/coor.json"
+    },
     "/wayOSM/{id}": {
       "$ref": "./WayOSMSwagger/ID.json"
     },
@@ -146,6 +155,9 @@
     },
     "/report": {
       "$ref": "./reportSwagger/noID.json"
+    },
+    "/report/autoVerify/{id}": {
+      "$ref": "./reportSwagger/autoVerify.json"
     }
   }
 }

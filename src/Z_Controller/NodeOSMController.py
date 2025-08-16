@@ -27,7 +27,28 @@ def getNodeOSMID(id):
     except Exception as e:
         print(e)
         return str(e), 500
-    
+
+@nodeOSM_blueprint.post('/coor')
+def getNearestNodeUsingCoor():
+    try:
+        coors = request.get_json()
+        res = findNodeOSMbyCoor(coors['lat'],coors['lon'])
+        return res
+    except Exception as e:
+        print(e)
+        return str(e), 500
+
+@nodeOSM_blueprint.post('/coor')
+def getNearestNodeInSegmentUsingCoor():
+    try:
+        coors = request.get_json()
+        res = findNodeOSMbyCoor(coors['lat'],coors['lon'])
+        return res
+    except Exception as e:
+        print(e)
+        return str(e), 500
+
+
 @nodeOSM_blueprint.put('/')
 def changeNodeOSMInstance():
     try:

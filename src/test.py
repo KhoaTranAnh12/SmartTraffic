@@ -1,44 +1,50 @@
-from EvaluationLib.main import *
-from EvaluationLib.image.lib.AITest import *
-from dotenv import *
-from bson import ObjectId
-from datetime import datetime
-import os
-from dotenv import *
-def evaluateStatus(data):
+from Z_Services.SegmentServices import *
+import sys
+import io
+
+def testFunc():
     try:
-        if data['type'] == 'image':
-            policeEval = TestForPolices('C:/Users/Administrator/OneDrive/Desktop/DACN-DATN/SmartTraffic-BE/aaaaa.jpg')
-            obstaclesEval = TestForObstacles('C:/Users/Administrator/OneDrive/Desktop/DACN-DATN/SmartTraffic-BE/aaaaa.jpg')
-            trafficJamEval = TestForTJam('C:/Users/Administrator/OneDrive/Desktop/DACN-DATN/SmartTraffic-BE/aaaaa.jpg')
-            floodedEval = TestForFlooded('C:/Users/Administrator/OneDrive/Desktop/DACN-DATN/SmartTraffic-BE/aaaaa.jpg')
-            return (policeEval,obstaclesEval,trafficJamEval,floodedEval,'text')
-        elif data['type'] == 'text':
-            policeEval = EvaluateRandomExample()
-            obstaclesEval = EvaluateRandomExample()
-            trafficJamEval = EvaluateRandomExample()
-            floodedEval = EvaluateRandomExample()
-            return (policeEval,obstaclesEval,trafficJamEval,floodedEval,'img')
+        report = {
+            'dataTextID':,
+            'dataImgID':
+        }
+        #Tìm textID và ImgID để tính toán
+        currTextID = report['dataTextID']
+        currImgID = report['dataImgID']
+        #Lấy Img và Text để chấm
+        text = evaluateStatus(currTextID)[0]
+        img = evaluateStatus(currImgID)[0]
+        #Dùng harmony để tính:
+        harmony = {}
+        fcount = 0
+        score = 0
+        for k in text.keys():
+            if text[k]['status']==img[k]['status']:
+                harmony[k] = {
+                    "status": text[k]['status'],
+                    "score": (text[k]['score']*img[k]['score']*2)/(text[k]['score']+img[k]['score'])
+                }
+                score += harmony[k]["score"]
+            else:
+                fcount +=1
+                if text[k]['status'] == False:
+                    harmony[k] = {
+                        "status": False,
+                        "score": (text[k]['score']*(1-img[k]['score'])*2)/(text[k]['score']+(1-img[k]['score']))
+                    }
+                    score += harmony[k]["score"]
+                else:
+                    harmony[k] = {
+                        "status": False,
+                        "score": ((1-text[k]['score'])*img[k]['score']*2)/((1-text[k]['score'])+img[k]['score'])
+                    }
+                    score += harmony[k]["score"]
+        resEval = score/4
+        if fcount < 2 and resEval > 0.8:
+            report['qualified'] = True
+            report['eval'] = resEval
+
+
     except Exception as e:
         print(e)
         return str(e), 500
-
-
-data =  {
-    '_id': ObjectId('aaaaaaaaaaaaaaaaaaaaaaaa'),
-    'type': 'text',
-    'infoID': ObjectId('abcdabcdabcdabcdabcdabcd'),
-    'uploadTime': datetime.date(datetime.now()),
-    'processed': False
-}
-
-text = {
-    'dataID': ObjectId('abcdabcdabcdabcdabcdabcd'),
-    'source': 'test.txt'
-}
-
-
-print(evaluateStatus(data))
-# load_dotenv()
-# # print(os.getenv('STORAGE') + '../storage/images/unverified')
-# print(os.listdir(os.getenv('STORAGE') + '/images/unverified'))

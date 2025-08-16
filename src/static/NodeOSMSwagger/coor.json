@@ -1,0 +1,25 @@
+{
+    "post": {
+        "summary": "Find Node using coordinates",
+        "tags": ["NodeOSM"],
+        "requestBody": {
+        "required": true,
+        "content": {
+            "application/json": {
+            "examples": {
+                "basic": {
+                "value": {
+                    "lat": 106.8084721,
+                    "lon": 10.8745146
+                }
+                }
+            }
+            }
+        }
+        },
+        "responses": {
+        "200": { "description": "OK" },
+        "400": { "description": "Bad Request" }
+        }
+    }
+}

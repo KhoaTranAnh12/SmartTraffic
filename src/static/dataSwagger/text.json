@@ -1,0 +1,25 @@
+{
+  "post": {
+    "summary": "Create New Text",
+    "tags": ["Texts"],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "examples": {
+            "basic": {
+              "value": {
+                "uploaderID": "objectId",
+                "content": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": { "description": "OK" },
+      "400": { "description": "Bad Request" }
+    }
+  }
+}

@@ -32,7 +32,6 @@ def findDataByID(id):
         res['_id'] = str(res['_id'])
         res['uploaderID'] = str(res['uploaderID'])
         res['InfoID'] = str(res['InfoID'])
-        print(res)
         return res, 200
     except PyMongoError as e:
         raise e
@@ -88,14 +87,15 @@ def findDataByTextID(id):
 def insertData(body):
     try:
         body['uploaderID'] = ObjectId(body['uploaderID'])
-        if not body['InfoID']: body['InfoID'] = None
-        if not body['uploadTime']: body["uploadTime"] = datetime.today()
-        if not body['processed']: body['processed'] = False
-        if not body['processed_time']: body['processed_time'] = None
-        if not body['TrainValTest']: body['TrainValTest'] = 0
-        if not body['location']: body['location'] = None
+        if 'InfoID' not in body: body['InfoID'] = None
+        if 'reportID' not in body: body['reportID'] = None
+        if 'uploadTime' not in body: body["uploadTime"] = datetime.today()
+        if 'processed' not in body: body['processed'] = False
+        if 'processed_time' not in body: body['processed_time'] = None
+        if 'TrainValTest' not in body: body['TrainValTest'] = 0
+        if 'location' not in body: body['location'] = None
         dataTable.insert_one(body)
-        del body['_id']
+        body['_id']= str(body['_id'])
         body['uploaderID'] = str(body['uploaderID'])
         body['InfoID'] = str(body['InfoID'])
         return body, 201
@@ -103,22 +103,18 @@ def insertData(body):
         raise e
 def updateData(body):
     try:
-        print(body)
         body['uploaderID'] = ObjectId(body['uploaderID'])
         body['InfoID'] = ObjectId(body['InfoID'])
+        body['reportID'] = ObjectId(body['reportID'])
         body["uploadTime"] = datetime.today()
         body['_id'] = ObjectId(body['_id'])
         res = dataTable.find_one({"_id": body['_id']})
-        print('abc')
         if res == None: 
             return jsonify({"error": "Not Found"}), 404
-        print(body)
         dataTable.update_one({'_id': body['_id']}, {"$set": body})
-        print('a')
         body['uploaderID'] = str(body['uploaderID'])
         body['InfoID'] = str(body['InfoID'])
         body['_id'] = str(body['_id'])
-        print(body)
         return body, 201
     except PyMongoError as e:
         raise e

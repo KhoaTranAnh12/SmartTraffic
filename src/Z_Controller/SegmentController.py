@@ -25,7 +25,15 @@ def getSegmentID(id):
     except Exception as e:
         print(e)
         return str(e), 500
-    
+@segment_blueprint.post('/gps')
+def findSegmentUsingCoor():
+    try:
+        coor = request.get_json()
+        
+    except Exception as e:
+        print(e)
+        return str(e), 500
+
 @segment_blueprint.put('/')
 def changeSegmentInstance():
     try:

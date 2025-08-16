@@ -1,4 +1,5 @@
 from Z_DBAccessLayer.DBConnect import TrafficMongoClient
+from Z_Services.NodeOSMServices import findNodeOSMInSegmentbyCoor
 from pymongo.errors import PyMongoError
 from bson.objectid import ObjectId
 from flask import jsonify
@@ -27,6 +28,17 @@ def findSegmentByID(id):
         return res, 200
     except PyMongoError as e:
         raise e
+    
+def findSegmentByCoor(lat,lon):
+    try:
+        res = findNodeOSMInSegmentbyCoor(lat,lon)[0]
+        if res == {}: return {}, 200
+        nodeID = res['id']
+        res = segmentTable.find({"nodes": nodeID})
+        if res == None: return {}, 200
+        return list(res), 200
+    except PyMongoError as e:
+        raise e    
 
 def updateSegment(body):
     try:
