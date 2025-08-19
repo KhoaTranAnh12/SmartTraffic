@@ -128,3 +128,19 @@ def deleteData(id):
         return jsonify({"message": "Successful"}), 200
     except PyMongoError as e:
         raise e
+    
+def convert_obj(doc):
+    if isinstance(doc, list):
+        return [convert_obj(d) for d in doc]
+    elif isinstance(doc, dict):
+        new_doc = {}
+        for k, v in doc.items():
+            if isinstance(v, ObjectId):
+                new_doc[k] = str(v)
+            elif isinstance(v, datetime):
+                new_doc[k] = v.isoformat()
+            else:
+                new_doc[k] = convert_obj(v)
+        return new_doc
+    else:
+        return doc

@@ -54,3 +54,21 @@ def changeSegmentInstance():
     except Exception as e:
         print(e)
         return str(e), 500
+    
+@segment_blueprint.get("/bounding-box")
+def getSegmentsInBoundingBox():
+    try:
+        lat1 = float(request.args.get("lat1"))
+        lon1 = float(request.args.get("lon1"))
+        lat2 = float(request.args.get("lat2"))
+        lon2 = float(request.args.get("lon2"))
+
+        corner1 = [lat1, lon1]
+        corner2 = [lat2, lon2]
+
+        res, status_code = findSegmentsInBoundingBox(corner1, corner2)
+        return jsonify(res), status_code
+
+    except Exception as e:
+        print(e)
+        return str(e), 500

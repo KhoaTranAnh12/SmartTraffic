@@ -378,3 +378,13 @@ def putTrainValTestValue():
     except Exception as e:
         print(e)
         return str(e), 500
+    
+@data_blueprint.get('/dataByUploader')
+def getDataByUploader():
+    try:
+        access_token = request.headers.get('Authorization')
+        uploaderID = checkToken(access_token)[0]
+        data, status = findDataByUploaderID(uploaderID)
+        return jsonify(convert_obj(data)), status
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

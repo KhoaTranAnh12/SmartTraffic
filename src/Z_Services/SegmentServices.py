@@ -49,5 +49,37 @@ def updateSegment(body):
         return body, 201
     except PyMongoError as e:
         raise e
-    
 
+
+def findSegmentsInBoundingBox(corner1, corner2):
+    try:
+        lat_min = min(corner1[0], corner2[0])
+        lat_max = max(corner1[0], corner2[0])
+        lon_min = min(corner1[1], corner2[1])
+        lon_max = max(corner1[1], corner2[1])
+        res_cursor = segmentTable.find({
+            "$or": [
+                {
+                    "$and": [
+                        {"polyline.coordinates.0.1": {"$gte": lat_min, "$lte": lat_max}},
+                        {"polyline.coordinates.0.0": {"$gte": lon_min, "$lte": lon_max}},
+                    ]
+                },
+                {
+                    "$and": [
+                        {"polyline.coordinates.1.1": {"$gte": lat_min, "$lte": lat_max}},
+                        {"polyline.coordinates.1.0": {"$gte": lon_min, "$lte": lon_max}},
+                    ]
+                }
+            ]
+        })
+
+        results = []
+        for doc in res_cursor:
+            doc.pop('_id', None)
+            results.append(doc)
+
+        return results, 200
+
+    except PyMongoError as e:
+        raise e
